@@ -1,65 +1,65 @@
 <template>
   <section class="harmonica">
     <div class="cover">
-      <span class="screws left"></span>
-      <span class="plate"></span>
-      <span class="screws right"></span>
+      <span class="screws left" />
+      <span class="plate" />
+      <span class="screws right" />
     </div>
-    <div class="reeds blow"></div>
+    <div class="reeds blow" />
     <div class="comb">
       <div class="holes" data-hole="1">
-        <span class="reed"></span>
-        <span class="rivet"></span>
+        <span class="reed" />
+        <span class="rivet" />
       </div>
       <div class="holes" data-hole="2">
-        <span class="reed"></span>
-        <span class="rivet"></span>
+        <span class="reed" />
+        <span class="rivet" />
       </div>
       <div class="holes" data-hole="3">
-        <span class="reed"></span>
-        <span class="rivet"></span>
+        <span class="reed" />
+        <span class="rivet" />
       </div>
       <div class="holes" data-hole="4">
-        <span class="reed"></span>
-        <span class="rivet"></span>
+        <span class="reed" />
+        <span class="rivet" />
       </div>
       <div class="holes" data-hole="5">
-        <span class="reed"></span>
-        <span class="rivet"></span>
+        <span class="reed" />
+        <span class="rivet" />
       </div>
       <div class="holes" data-hole="6">
-        <span class="reed"></span>
-        <span class="rivet"></span>
+        <span class="reed" />
+        <span class="rivet" />
       </div>
       <div class="holes" data-hole="7">
-        <span class="reed"></span>
-        <span class="rivet"></span>
+        <span class="reed" />
+        <span class="rivet" />
       </div>
       <div class="holes" data-hole="8">
-        <span class="reed"></span>
-        <span class="rivet"></span>
+        <span class="reed" />
+        <span class="rivet" />
       </div>
       <div class="holes" data-hole="9">
-        <span class="reed"></span>
-        <span class="rivet"></span>
+        <span class="reed" />
+        <span class="rivet" />
       </div>
       <div class="holes" data-hole="10">
-        <span class="reed"></span>
-        <span class="rivet"></span>
+        <span class="reed" />
+        <span class="rivet" />
       </div>
     </div>
-    <div class="reeds draw"></div>
+    <div class="reeds draw" />
     <div class="cover">
-      <span class="screws bottom left"></span>
-      <span class="plate bottom"></span>
-      <span class="screws bottom right"></span>
+      <span class="screws bottom left" />
+      <span class="plate bottom" />
+      <span class="screws bottom right" />
     </div>
   </section>
 </template>
 
 <script>
 export default {
-name: "Harmonica"
+  name: 'Harmonica'
 }
 </script>
 
@@ -113,6 +113,7 @@ name: "Harmonica"
       }
     }
   }
+
   > .reeds {
     height: 3px;
     background: linear-gradient(to bottom, rgba(156, 128, 68, 1) 20%,rgba(196, 161, 85, 1) 50%,rgba(156, 128, 68, 1) 80%);
@@ -124,6 +125,7 @@ name: "Harmonica"
       border-radius: 0 0 2px 2px;
     }
   }
+
   > .comb {
     display: flex;
     justify-content: center;
@@ -143,6 +145,11 @@ name: "Harmonica"
       margin: 0 6.5px;
       background-color: black;
       position: relative;
+      cursor: pointer;
+
+      &:hover {
+        background-color: white;
+      }
 
       &:before {
         content: attr(data-hole);
