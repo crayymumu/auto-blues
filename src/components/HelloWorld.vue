@@ -34,15 +34,15 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import { reactive, toRefs } from 'vue';
 
-@Options({
-  props: {
-    msg: String
-  }
-})
-export default class HelloWorld extends Vue {
-  msg!: string
+export default {
+  setup() {
+    const state = reactive({})
+    return {
+      ...toRefs(state),
+    }
+  },
 }
 </script>
 

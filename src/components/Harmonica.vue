@@ -7,43 +7,13 @@
     </div>
     <div class="reeds blow" />
     <div class="comb">
-      <div class="holes" data-hole="1">
-        <span class="reed" />
-        <span class="rivet" />
-      </div>
-      <div class="holes" data-hole="2">
-        <span class="reed" />
-        <span class="rivet" />
-      </div>
-      <div class="holes" data-hole="3">
-        <span class="reed" />
-        <span class="rivet" />
-      </div>
-      <div class="holes" data-hole="4">
-        <span class="reed" />
-        <span class="rivet" />
-      </div>
-      <div class="holes" data-hole="5">
-        <span class="reed" />
-        <span class="rivet" />
-      </div>
-      <div class="holes" data-hole="6">
-        <span class="reed" />
-        <span class="rivet" />
-      </div>
-      <div class="holes" data-hole="7">
-        <span class="reed" />
-        <span class="rivet" />
-      </div>
-      <div class="holes" data-hole="8">
-        <span class="reed" />
-        <span class="rivet" />
-      </div>
-      <div class="holes" data-hole="9">
-        <span class="reed" />
-        <span class="rivet" />
-      </div>
-      <div class="holes" data-hole="10">
+      <div
+        v-for="holeItem in harmonicaHoles"
+        :key="holeItem.name"
+        class="holes"
+        :data-hole="holeItem.name"
+        @click="handleClickHoles(holeItem)"
+      >
         <span class="reed" />
         <span class="rivet" />
       </div>
@@ -58,8 +28,78 @@
 </template>
 
 <script>
+import WebAudioFontPlayer from 'webaudiofont'
+import { reactive, toRefs } from 'vue'
+
 export default {
-  name: 'Harmonica'
+  props: {
+    test: {
+      type: String,
+      required: true
+    }
+  },
+  setup(props) {
+    props.test
+    const state = reactive({
+      harmonicaHoles: [
+        {
+          name: '1'
+        },
+        {
+          name: '2'
+        },
+        {
+          name: '3'
+        },
+        {
+          name: '4'
+        },
+        {
+          name: '5'
+        },
+        {
+          name: '6'
+        },
+        {
+          name: '7'
+        },
+        {
+          name: '8'
+        },
+        {
+          name: '9'
+        },
+        {
+          name: '10'
+        },
+      ],
+      instr: null,
+      player: null,
+      audioContext: null
+    })
+
+    const AudioContextFunc = window.AudioContext || window.webkitAudioContext
+    const audioContext = new AudioContextFunc()
+    const player = new WebAudioFontPlayer()
+    const path = 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/harmonica1.js'
+    const name = '_tone_0220_Aspirin_sf2_file'
+    player.loader.startLoad(audioContext, path, name)
+
+    player.loader.waitLoad(() => {
+      state.instr = window[name]
+    })
+    state.player = player
+    state.audioContext = audioContext
+
+    const handleClickHoles = (item) => {
+      state.player.queueWaveTable(state.audioContext, state.audioContext.destination, state.instr, 0, 11 * 7 + parseInt(item.name), 1)
+    }
+
+    return {
+      ...toRefs(state),
+      handleClickHoles
+    }
+  }
 }
 </script>
 
@@ -161,6 +201,7 @@ export default {
         position: absolute;
         top: -15px;
         left: 5px;
+        user-select: none;
       }
       &:last-child {
         &:before {

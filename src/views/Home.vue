@@ -1,19 +1,26 @@
 <template>
   <div class="home">
-    <Harmonica />
+    <Harmonica :test="value" />
   </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-import Harmonica from '@/components/Harmonica.vue';
+import Harmonica from '@/components/Harmonica.vue'
+import { reactive, toRefs } from 'vue'
 
-@Options({
+export default {
   components: {
     Harmonica
   },
-})
-export default class Home extends Vue {}
+  setup() {
+    const state = reactive({
+      value: 123
+    })
+    return {
+      ...toRefs(state),
+    }
+  },
+}
 </script>
 
 <style lang="less">
