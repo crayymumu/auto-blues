@@ -8,11 +8,12 @@
     <div class="reeds blow" />
     <div class="comb">
       <div
-        v-for="holeItem in harmonicaHoles"
-        :key="holeItem.name"
+        v-for="(holeItem, holeKey) in cBottomHarmonicaHoles"
+        :key="holeKey"
         class="holes"
-        :data-hole="holeItem.name"
-        @click="handleClickHoles(holeItem)"
+        :data-hole="holeKey+1"
+        @mousedown="handleClickHoles(holeItem, 10)"
+        @mouseup="handleCancel(holeItem)"
       >
         <span class="reed" />
         <span class="rivet" />
@@ -29,7 +30,8 @@
 
 <script>
 import WebAudioFontPlayer from 'webaudiofont'
-import { reactive, toRefs } from 'vue'
+import { reactive, toRefs, onMounted } from 'vue'
+import tone from '@/lib/tone'
 
 export default {
   props: {
@@ -40,42 +42,96 @@ export default {
   },
   setup(props) {
     props.test
+
     const state = reactive({
-      harmonicaHoles: [
+      cTopHarmonicaHoles: [
         {
-          name: '1'
+          name: 'C5',
+          pitch: tone['C5'],
         },
         {
-          name: '2'
+          name: 'E5',
+          pitch: tone['E5'],
         },
         {
-          name: '3'
+          name: 'G5',
+          pitch: tone['G5'],
         },
         {
-          name: '4'
+          name: 'C6',
+          pitch: tone['C6'],
         },
         {
-          name: '5'
+          name: 'E6',
+          pitch: tone['E6'],
         },
         {
-          name: '6'
+          name: 'G6',
+          pitch: tone['G6'],
         },
         {
-          name: '7'
+          name: 'C',
+          pitch: tone['C7'],
         },
         {
-          name: '8'
+          name: 'E',
+          pitch: tone['E7'],
         },
         {
-          name: '9'
+          name: 'G',
+          pitch: tone['G7'],
         },
         {
-          name: '10'
+          name: 'C',
+          pitch: tone['C8'],
+        },
+      ],
+      cBottomHarmonicaHoles: [
+        {
+          name: 'D',
+          pitch: tone['D5']
+        },
+        {
+          name: 'G',
+          pitch: tone['G5']
+        },
+        {
+          name: 'B',
+          pitch: tone['B5']
+        },
+        {
+          name: 'D',
+          pitch: tone['D6']
+        },
+        {
+          name: 'F',
+          pitch: tone['F6']
+        },
+        {
+          name: 'A',
+          pitch: tone['A6']
+        },
+        {
+          name: 'B',
+          pitch: tone['B6']
+        },
+        {
+          name: 'D',
+          pitch: tone['D7']
+        },
+        {
+          name: 'F',
+          pitch: tone['F7']
+        },
+        {
+          name: 'A',
+          pitch: tone['A7']
         },
       ],
       instr: null,
       player: null,
-      audioContext: null
+      audioContext: null,
+      cacheHole: {}
     })
 
     const AudioContextFunc = window.AudioContext || window.webkitAudioContext
@@ -91,13 +147,212 @@ export default {
     state.player = player
     state.audioContext = audioContext
 
-    const handleClickHoles = (item) => {
-      state.player.queueWaveTable(state.audioContext, state.audioContext.destination, state.instr, 0, 11 * 7 + parseInt(item.name), 1)
+    const display = (when, pitch, duration) => {
+      return state.player.queueWaveTable(
+        state.audioContext,
+        state.audioContext.destination,
+        state.instr,
+        when,
+        pitch,
+        duration,
+      )
+    }
+
+    const handleClickHoles = (item, duration, when = 0) => {
+      state.cacheHole[item.pitch] = display(when, item.pitch, duration)
+    }
+
+    // bd谱 单音处理 B Blow 吹 D Draw 吸
+    const displaySingleDb = (index, type, duration, when) => {
+      if (type === 'B') {
+        handleClickHoles(state.cTopHarmonicaHoles[index - 1], duration, when)
+      } else if (type === 'D') {
+        handleClickHoles(state.cBottomHarmonicaHoles[index - 1], duration, when)
+      }
+    }
+
+    const displayDb = () => {
+      let totalDuration = 0
+      const dbList = [
+        {
+          note: '4B',
+          duration: 1,
+        },
+        {
+          note: '4D',
+          duration: 1,
+        },
+        {
+          note: '5B',
+          duration: 1,
+        },
+        {
+          note: '4B',
+          duration: 1,
+        },
+
+        {
+          note: '4B',
+          duration: 1,
+        },
+        {
+          note: '4D',
+          duration: 1,
+        },
+        {
+          note: '5B',
+          duration: 1,
+        },
+        {
+          note: '4B',
+          duration: 1,
+        },
+
+        {
+          note: '5B',
+          duration: 1,
+        },
+        {
+          note: '5D',
+          duration: 1,
+        },
+        {
+          note: '6B',
+          duration: 1,
+        },
+        {
+          note: '',
+          duration: 1,
+        },
+
+        {
+          note: '5B',
+          duration: 1,
+        },
+        {
+          note: '5D',
+          duration: 1,
+        },
+        {
+          note: '6B',
+          duration: 1,
+        },
+        {
+          note: '',
+          duration: 1,
+        },
+
+        {
+          note: '6B',
+          duration: 0.5,
+        },
+        {
+          note: '6D',
+          duration: 0.5,
+        },
+        {
+          note: '6B',
+          duration: 1,
+        },
+        {
+          note: '5D',
+          duration: 1,
+        },
+        {
+          note: '5B',
+          duration: 1,
+        },
+        {
+          note: '4B',
+          duration: 1,
+        },
+
+        {
+          note: '6B',
+          duration: 0.5,
+        },
+        {
+          note: '6D',
+          duration: 0.5,
+        },
+        {
+          note: '6B',
+          duration: 1,
+        },
+        {
+          note: '5D',
+          duration: 1,
+        },
+        {
+          note: '5B',
+          duration: 1,
+        },
+        {
+          note: '4B',
+          duration: 1,
+        },
+
+        {
+          note: '4B',
+          duration: 1,
+        },
+        {
+          note: '3B',
+          duration: 1,
+        },
+        {
+          note: '4B',
+          duration: 1,
+        },
+        {
+          note: '',
+          duration: 1,
+        },
+
+        {
+          note: '4B',
+          duration: 1,
+        },
+        {
+          note: '3B',
+          duration: 1,
+        },
+        {
+          note: '4B',
+          duration: 1,
+        },
+        {
+          note: '',
+          duration: 1,
+        },
+      ]
+      // const dbList2 = [
+      //   '5B', '5B', '4D', '4B3D', '4B', '4D', '5B', '5B6B', '6D', '6D7D', '6D', '6B4D', '5B',
+      //   '5B', '6B6D', '6D', '6B', '5D5B', '5D', '5B4D4B', '3D"', '3D', '4B', '5B4D', '3D', '3B', '3D"',
+      // ]
+      dbList.forEach(item => {
+        totalDuration += item.duration
+        // console.log(item.substring(0, 1), item.substring(1, 2))
+        if (item.note) {
+          displaySingleDb(item.note.substring(0, 1), item.note.substring(1, 2), item.duration, totalDuration)
+        }
+      })
+    }
+
+    onMounted(() => {
+      setTimeout(() => {
+        displayDb()
+      }, 2000)
+    })
+
+    const handleCancel = item => {
+      state.cacheHole[item.pitch].cancel()
     }
 
     return {
       ...toRefs(state),
-      handleClickHoles
+      handleClickHoles,
+      handleCancel,
     }
   }
 }
