@@ -1,30 +1,31 @@
 <template>
   <section class="harmonica">
-    <div class="cover">
-      <span class="screws left" />
-      <span class="plate" />
-      <span class="screws right" />
-    </div>
-    <div class="reeds blow" />
-    <div class="comb">
-      <div
-        v-for="(holeItem, holeKey) in cBottomHarmonicaHoles"
-        :key="holeKey"
-        class="holes"
-        :data-hole="holeKey+1"
-        @mousedown="handleClickHoles(holeItem, 10)"
-        @mouseup="handleCancel(holeItem)"
-      >
-        <span class="reed" />
-        <span class="rivet" />
-      </div>
-    </div>
-    <div class="reeds draw" />
-    <div class="cover">
-      <span class="screws bottom left" />
-      <span class="plate bottom" />
-      <span class="screws bottom right" />
-    </div>
+    <button @mousedown="displayDb()" />
+    <!--    <div class="cover">-->
+    <!--      <span class="screws left" />-->
+    <!--      <span class="plate" />-->
+    <!--      <span class="screws right" />-->
+    <!--    </div>-->
+    <!--    <div class="reeds blow" />-->
+    <!--    <div class="comb">-->
+    <!--      <div-->
+    <!--        v-for="(holeItem, holeKey) in cBottomHarmonicaHoles"-->
+    <!--        :key="holeKey"-->
+    <!--        class="holes"-->
+    <!--        :data-hole="holeKey+1"-->
+    <!--        @mousedown="handleCacheNote(holeItem.pitch, 10)"-->
+    <!--        @mouseup="handleCancel(holeItem)"-->
+    <!--      >-->
+    <!--        <span class="reed" />-->
+    <!--        <span class="rivet" />-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--    <div class="reeds draw" />-->
+    <!--    <div class="cover">-->
+    <!--      <span class="screws bottom left" />-->
+    <!--      <span class="plate bottom" />-->
+    <!--      <span class="screws bottom right" />-->
+    <!--    </div>-->
   </section>
 </template>
 
@@ -32,6 +33,8 @@
 import WebAudioFontPlayer from 'webaudiofont'
 import { reactive, toRefs, onMounted } from 'vue'
 import tone from '@/lib/tone'
+import { barStandard } from '@/constant'
+import { isNumber, parseInt } from 'lodash'
 
 export default {
   props: {
@@ -46,85 +49,241 @@ export default {
     const state = reactive({
       cTopHarmonicaHoles: [
         {
-          name: 'C5',
+          scale: 'do',
+          scaleNumber: '1.',
           pitch: tone['C5'],
+          special: [
+            {
+              type: 'overBlow',
+              scale: 're',
+              scaleNumber: '2.#',
+              pitch: tone['D#5'],
+            }
+          ],
         },
         {
-          name: 'E5',
+          scale: 'mi',
+          scaleNumber: '3.',
           pitch: tone['E5'],
         },
         {
-          name: 'G5',
+          scale: 'so',
+          scaleNumber: '5.',
           pitch: tone['G5'],
         },
         {
-          name: 'C6',
+          scale: 'do',
+          scaleNumber: '1',
           pitch: tone['C6'],
+          special: [
+            {
+              type: 'overBlow',
+              scale: 're',
+              scaleNumber: '2#',
+              pitch: tone['D#6'],
+            }
+          ],
         },
         {
-          name: 'E6',
+          scale: 'mi',
+          scaleNumber: '3',
           pitch: tone['E6'],
+          special: [
+            {
+              type: 'overBlow',
+              scale: 'fa',
+              scaleNumber: '4#',
+              pitch: tone['F#6'],
+            }
+          ],
         },
         {
-          name: 'G6',
+          scale: 'so',
+          scaleNumber: '5',
           pitch: tone['G6'],
+          special: [
+            {
+              type: 'overBlow',
+              scale: 'la',
+              scaleNumber: '6#',
+              pitch: tone['A#6'],
+            }
+          ],
         },
         {
-          name: 'C',
+          scale: 'do',
+          scaleNumber: '1。',
           pitch: tone['C7'],
         },
         {
-          name: 'E',
+          scale: 'mi',
+          scaleNumber: '3。',
           pitch: tone['E7'],
+          special: [
+            {
+              type: 'overBend',
+              scale: 're',
+              scaleNumber: '3。b',
+              pitch: tone['D#7'],
+            }
+          ],
         },
         {
-          name: 'G',
+          scale: 'so',
+          scaleNumber: '5。',
           pitch: tone['G7'],
+          special: [
+            {
+              type: 'overBend',
+              scale: 'fa',
+              scaleNumber: '5。b',
+              pitch: tone['F#7'],
+            }
+          ],
         },
         {
-          name: 'C',
+          scale: 'do',
+          scaleNumber: '5。。',
           pitch: tone['C8'],
+          special: [
+            {
+              type: 'overBend',
+              scale: 'si',
+              scaleNumber: '7。',
+              pitch: tone['B7'],
+            },
+            {
+              type: 'overBend',
+              scale: 'la',
+              scaleNumber: '7。b',
+              pitch: tone['A#7'],
+            },
+          ],
         },
       ],
       cBottomHarmonicaHoles: [
         {
-          name: 'D',
-          pitch: tone['D5']
+          scale: 're',
+          scaleNumber: '2.',
+          pitch: tone['D5'],
+          special: [
+            {
+              type: 'overBend',
+              scale: 'do',
+              scaleNumber: '2.b',
+              pitch: tone['C#5'],
+            },
+          ]
         },
         {
-          name: 'G',
-          pitch: tone['G5']
+          scale: 'so',
+          scaleNumber: '5.',
+          pitch: tone['G5'],
+          special: [
+            {
+              type: 'overBend',
+              scale: 'fa',
+              scaleNumber: '5.b',
+              pitch: tone['F#5'],
+            },
+            {
+              type: 'overBend',
+              scale: 'fa',
+              scaleNumber: '4.',
+              pitch: tone['F5'],
+            },
+          ]
         },
         {
-          name: 'B',
-          pitch: tone['B5']
+          scale: 'si',
+          scaleNumber: '7.',
+          pitch: tone['B5'],
+          special: [
+            {
+              type: 'overBend',
+              scale: 'la',
+              scaleNumber: '7.b',
+              pitch: tone['A#5'],
+            },
+            {
+              type: 'overBend',
+              scale: 'la',
+              scaleNumber: '6.',
+              pitch: tone['A5'],
+            },
+            {
+              type: 'overBend',
+              scale: 'so',
+              scaleNumber: '6.b',
+              pitch: tone['G#5'],
+            },
+          ]
         },
         {
-          name: 'D',
-          pitch: tone['D6']
+          scale: 're',
+          scaleNumber: '2',
+          pitch: tone['D6'],
+          special: [
+            {
+              type: 'overBend',
+              scale: 're',
+              scaleNumber: '2b',
+              pitch: tone['C#6'],
+            }
+          ]
         },
         {
-          name: 'F',
+          scale: 'fa',
+          scaleNumber: '4',
           pitch: tone['F6']
         },
         {
-          name: 'A',
-          pitch: tone['A6']
+          scale: 'la',
+          scaleNumber: '6',
+          pitch: tone['A6'],
+          special: [
+            {
+              type: 'overBend',
+              scale: 'la',
+              scaleNumber: '6b',
+              pitch: tone['G#6'],
+            }
+          ]
         },
         {
-          name: 'B',
-          pitch: tone['B6']
+          scale: 'si',
+          scaleNumber: '7',
+          pitch: tone['B6'],
+          special: [
+            {
+              type: 'overDraw',
+              scale: 'do',
+              scaleNumber: '1。#',
+              pitch: tone['C#7'],
+            }
+          ]
         },
         {
-          name: 'D',
+          scale: 're',
+          scaleNumber: '2。',
           pitch: tone['D7']
         },
         {
-          name: 'F',
-          pitch: tone['F7']
+          scale: 'fa',
+          scaleNumber: '4。',
+          pitch: tone['F7'],
+          special: [
+            {
+              type: 'overDraw',
+              scale: 'so',
+              scaleNumber: '5。#',
+              pitch: tone['G#7'],
+            }
+          ]
         },
         {
-          name: 'A',
+          scale: 'la',
+          scaleNumber: '6。',
           pitch: tone['A7']
         },
       ],
@@ -158,191 +317,123 @@ export default {
       )
     }
 
-    const handleClickHoles = (item, duration, when = 0) => {
-      state.cacheHole[item.pitch] = display(when, item.pitch, duration)
+    const handleCacheNote = (pitch, duration, when = 0) => {
+      state.cacheHole[pitch] = display(when, pitch, duration)
     }
 
-    // bd谱 单音处理 B Blow 吹 D Draw 吸
-    const displaySingleDb = (index, type, duration, when) => {
-      if (type === 'B') {
-        handleClickHoles(state.cTopHarmonicaHoles[index - 1], duration, when)
-      } else if (type === 'D') {
-        handleClickHoles(state.cBottomHarmonicaHoles[index - 1], duration, when)
+    // 乐谱解析
+    const analyzeNotation = (notation, defaultDuration) => {
+      let notationResult = []
+      notation
+        // 1. 分拍拆分
+        .split('|')
+        // 2. 将每一拍中的乐符
+        .forEach(notationItem => {
+          let start = 0
+          const notes = []
+          for (let i = 1; i < notationItem.length; i++) {
+            if (!isNaN(parseInt(notationItem.charAt(i))) && isNumber(parseInt(notationItem.charAt(i)))) {
+              notes.push(notationItem.substring(start, i))
+              start = i
+            }
+            if (i === notationItem.length - 1) {
+              notes.push(notationItem.substring(start, i + 1))
+            }
+          }
+          // console.log(notes)
+          // 3. 将乐符及对应时间确认，最后拼凑成完整的乐谱
+          const notesDisplay = notes.map(noteItem => {
+            let duration = defaultDuration
+            let note = noteItem.charAt(0)
+            for (let i = 1; i < noteItem.length; i++) {
+              const targetNote = noteItem.charAt(i)
+              if (targetNote === '.' || targetNote === '。' || targetNote === '#' || targetNote === 'p') {
+                note = note.concat(targetNote)
+                continue
+              }
+              if (targetNote === '-') {
+                duration += defaultDuration
+              } else if (targetNote === ',') {
+                duration += defaultDuration / 2
+              } else if (targetNote === '_') {
+                duration = duration / 2
+              }
+            }
+            return {
+              note,
+              duration,
+            }
+          })
+          notationResult = notationResult.concat(notesDisplay)
+        })
+      return notationResult
+    }
+
+    // 乐谱演奏
+    const displayNotation = (notationResult, singleDuration) => {
+      let totalDuration = 0
+      for (let i = 0; i < notationResult.length; i++) {
+        const notationItem = notationResult[i]
+        if (notationItem.note === 0) {
+          totalDuration += notationItem.duration * singleDuration
+          continue
+        }
+        const allHoles = state.cTopHarmonicaHoles.concat(state.cBottomHarmonicaHoles)
+        allHoles.forEach(holeItem => {
+          if (holeItem.scaleNumber === notationItem.note) {
+            handleCacheNote(holeItem.pitch, notationItem.duration * singleDuration, totalDuration)
+          }
+          if (holeItem.special && holeItem.special.length > 0) {
+            holeItem.special.forEach(specialItem => {
+              if (specialItem.scaleNumber === notationItem.note) {
+                handleCacheNote(specialItem.pitch, notationItem.duration * singleDuration, totalDuration)
+              }
+            })
+          }
+        })
+        totalDuration += notationItem.duration * singleDuration
       }
     }
 
     const displayDb = () => {
-      let totalDuration = 0
-      const dbList = [
-        {
-          note: '4B',
-          duration: 1,
-        },
-        {
-          note: '4D',
-          duration: 1,
-        },
-        {
-          note: '5B',
-          duration: 1,
-        },
-        {
-          note: '4B',
-          duration: 1,
-        },
-
-        {
-          note: '4B',
-          duration: 1,
-        },
-        {
-          note: '4D',
-          duration: 1,
-        },
-        {
-          note: '5B',
-          duration: 1,
-        },
-        {
-          note: '4B',
-          duration: 1,
-        },
-
-        {
-          note: '5B',
-          duration: 1,
-        },
-        {
-          note: '5D',
-          duration: 1,
-        },
-        {
-          note: '6B',
-          duration: 1,
-        },
-        {
-          note: '',
-          duration: 1,
-        },
-
-        {
-          note: '5B',
-          duration: 1,
-        },
-        {
-          note: '5D',
-          duration: 1,
-        },
-        {
-          note: '6B',
-          duration: 1,
-        },
-        {
-          note: '',
-          duration: 1,
-        },
-
-        {
-          note: '6B',
-          duration: 0.5,
-        },
-        {
-          note: '6D',
-          duration: 0.5,
-        },
-        {
-          note: '6B',
-          duration: 1,
-        },
-        {
-          note: '5D',
-          duration: 1,
-        },
-        {
-          note: '5B',
-          duration: 1,
-        },
-        {
-          note: '4B',
-          duration: 1,
-        },
-
-        {
-          note: '6B',
-          duration: 0.5,
-        },
-        {
-          note: '6D',
-          duration: 0.5,
-        },
-        {
-          note: '6B',
-          duration: 1,
-        },
-        {
-          note: '5D',
-          duration: 1,
-        },
-        {
-          note: '5B',
-          duration: 1,
-        },
-        {
-          note: '4B',
-          duration: 1,
-        },
-
-        {
-          note: '4B',
-          duration: 1,
-        },
-        {
-          note: '3B',
-          duration: 1,
-        },
-        {
-          note: '4B',
-          duration: 1,
-        },
-        {
-          note: '',
-          duration: 1,
-        },
-
-        {
-          note: '4B',
-          duration: 1,
-        },
-        {
-          note: '3B',
-          duration: 1,
-        },
-        {
-          note: '4B',
-          duration: 1,
-        },
-        {
-          note: '',
-          duration: 1,
-        },
-      ]
-      // const dbList2 = [
-      //   '5B', '5B', '4D', '4B3D', '4B', '4D', '5B', '5B6B', '6D', '6D7D', '6D', '6B4D', '5B',
-      //   '5B', '6B6D', '6D', '6B', '5D5B', '5D', '5B4D4B', '3D"', '3D', '4B', '5B4D', '3D', '3B', '3D"',
+      state.audioContext.resume()
+      const singleDuration = 240 / 60
+      const defaultDuration = barStandard.demisemiquaver.multiple
+      /**
+       * _ 半音
+       * , 附点音符
+       * - 持续单音
+       * . 低音
+       * 。高音
+       */
+      // 天空之城
+      // const notationItem = [
+      //   '0006_7_|1。,7_1。3。|7--3_3_|6,5_61。|5--3|4,3_41。',
+      //   '|3-0_1。_1。_1。_|7,4#_47|7-06_7_|1。,7_1。3。|7--3_3_|6,5_61。',
+      //   '|5--2_3_|41。_7_7_1。_1。|2。_2。_3。_1。0|1。_7_6_6_75#|6--1。_2。_|3。,2。_3。5。',
+      //   '|2。--5_5_|1。,7_1。3。|3。---|6_7_1。72。_2。_|1。,5_5-|4。3。2。1。',
+      //   '|3。--3。|6。-5。5。|3。_2。_1。-0_1。_|2。1。_2。_2。5。|3。--3。|6。-5。-',
+      //   '|3。_2。_1。-0_1。_|2。1。_2。_2。7|6-'
       // ]
-      dbList.forEach(item => {
-        totalDuration += item.duration
-        // console.log(item.substring(0, 1), item.substring(1, 2))
-        if (item.note) {
-          displaySingleDb(item.note.substring(0, 1), item.note.substring(1, 2), item.duration, totalDuration)
-        }
-      })
+      // 假如爱有天意
+      const notationItem2 = [
+        '3-3|2,1_7.|1-2|3-3_5_|6-6|7,6_5_2_|3--|',
+        '003_5_|6-6|5-3_2_|3,4_3_2_|1-6._7._|1-2_3_|2,7._5.|6.--|',
+        '000|3-3|2,1_7.|1-2|3-3_5_|6-6|7,6_5_2_|3--|',
+        '003_5_|6-6|5-3_2_|3,4_3_2_|1-6._7._|1-2_3_|2,7._5._|',
+        '6.--|035|6--|7--|7-2。|',
+        '1。-6_6_|6-6|5,6_5_2_|43-|035|',
+        '6--|7--|5#-7|1。--|1-3|',
+        '2,7._5._|6.--|000'
+      ]
+      const notationResult = analyzeNotation(notationItem2.join(), defaultDuration)
+      displayNotation(notationResult, singleDuration)
     }
 
     onMounted(() => {
-      setTimeout(() => {
-        displayDb()
-      }, 2000)
+      // setTimeout(() => {
+      //   displayDb()
+      // }, 2000)
     })
 
     const handleCancel = item => {
@@ -351,8 +442,9 @@ export default {
 
     return {
       ...toRefs(state),
-      handleClickHoles,
+      handleCacheNote,
       handleCancel,
+      displayDb
     }
   }
 }

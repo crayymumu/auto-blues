@@ -23,7 +23,6 @@ const tone = () => {
       result[`${toneItem}${i}`] = 12 * i + toneIndex
     })
   }
-  console.log(result)
   return result
 }
 
