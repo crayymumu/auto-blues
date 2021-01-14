@@ -107,6 +107,12 @@ export default {
               scale: 'la',
               scaleNumber: '6#',
               pitch: tone['A#6'],
+            },
+            {
+              type: 'overBend',
+              scale: 'so',
+              scaleNumber: '5#',
+              pitch: tone['G#6'],
             }
           ],
         },
@@ -290,22 +296,22 @@ export default {
       instr: null,
       player: null,
       audioContext: null,
-      cacheHole: {}
+      cacheHole: {},
+      totalDuration: 0
     })
 
     const AudioContextFunc = window.AudioContext || window.webkitAudioContext
-    const audioContext = new AudioContextFunc()
-    const player = new WebAudioFontPlayer()
+    state.audioContext = new AudioContextFunc()
+    state.player = new WebAudioFontPlayer()
     const path = 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/harmonica1.js'
     const name = '_tone_0220_Aspirin_sf2_file'
-    player.loader.startLoad(audioContext, path, name)
+    state.player.loader.startLoad(state.audioContext, path, name)
 
-    player.loader.waitLoad(() => {
+    state.player.loader.waitLoad(() => {
       state.instr = window[name]
     })
-    state.player = player
-    state.audioContext = audioContext
 
+    // 根据频率和持续时长发声
     const display = (when, pitch, duration) => {
       return state.player.queueWaveTable(
         state.audioContext,
@@ -319,6 +325,10 @@ export default {
 
     const handleCacheNote = (pitch, duration, when = 0) => {
       state.cacheHole[pitch] = display(when, pitch, duration)
+    }
+
+    const handleCancel = item => {
+      state.cacheHole[item.pitch].cancel()
     }
 
     // 乐谱解析
@@ -371,34 +381,39 @@ export default {
 
     // 乐谱演奏
     const displayNotation = (notationResult, singleDuration) => {
-      let totalDuration = 0
       for (let i = 0; i < notationResult.length; i++) {
+        let displayDuration = 0
         const notationItem = notationResult[i]
-        if (notationItem.note === 0) {
-          totalDuration += notationItem.duration * singleDuration
-          continue
+        if (notationItem.note !== '0') {
+          const allHoles = state.cTopHarmonicaHoles.concat(state.cBottomHarmonicaHoles)
+          allHoles.forEach(holeItem => {
+            // 基本吹奏
+            if (holeItem.scaleNumber === notationItem.note) {
+              const envelope = display(state.totalDuration, holeItem.pitch, notationItem.duration * singleDuration)
+              displayDuration = envelope.duration
+            }
+            // 技巧吹奏
+            if (holeItem.special && holeItem.special.length > 0) {
+              holeItem.special.forEach(specialItem => {
+                if (specialItem.scaleNumber === notationItem.note) {
+                  const envelope = display(state.totalDuration, specialItem.pitch, notationItem.duration * singleDuration)
+                  displayDuration = envelope.duration
+                }
+              })
+            }
+          })
+        } else {
+          displayDuration = notationItem.duration * singleDuration
         }
-        const allHoles = state.cTopHarmonicaHoles.concat(state.cBottomHarmonicaHoles)
-        allHoles.forEach(holeItem => {
-          if (holeItem.scaleNumber === notationItem.note) {
-            handleCacheNote(holeItem.pitch, notationItem.duration * singleDuration, totalDuration)
-          }
-          if (holeItem.special && holeItem.special.length > 0) {
-            holeItem.special.forEach(specialItem => {
-              if (specialItem.scaleNumber === notationItem.note) {
-                handleCacheNote(specialItem.pitch, notationItem.duration * singleDuration, totalDuration)
-              }
-            })
-          }
-        })
-        totalDuration += notationItem.duration * singleDuration
+        state.totalDuration += displayDuration
       }
     }
 
-    const displayDb = () => {
-      state.audioContext.resume()
-      const singleDuration = 240 / 60
-      const defaultDuration = barStandard.demisemiquaver.multiple
+    const displayDb = async() => {
+      if (state.audioContext.state === 'running') {
+        state.totalDuration = state.audioContext.currentTime
+      }
+      const defaultDuration = barStandard.semiquaver.multiple
       /**
        * _ 半音
        * , 附点音符
@@ -407,27 +422,37 @@ export default {
        * 。高音
        */
       // 天空之城
-      // const notationItem = [
-      //   '0006_7_|1。,7_1。3。|7--3_3_|6,5_61。|5--3|4,3_41。',
-      //   '|3-0_1。_1。_1。_|7,4#_47|7-06_7_|1。,7_1。3。|7--3_3_|6,5_61。',
-      //   '|5--2_3_|41。_7_7_1。_1。|2。_2。_3。_1。0|1。_7_6_6_75#|6--1。_2。_|3。,2。_3。5。',
-      //   '|2。--5_5_|1。,7_1。3。|3。---|6_7_1。72。_2。_|1。,5_5-|4。3。2。1。',
-      //   '|3。--3。|6。-5。5。|3。_2。_1。-0_1。_|2。1。_2。_2。5。|3。--3。|6。-5。-',
-      //   '|3。_2。_1。-0_1。_|2。1。_2。_2。7|6-'
-      // ]
-      // 假如爱有天意
-      const notationItem2 = [
-        '3-3|2,1_7.|1-2|3-3_5_|6-6|7,6_5_2_|3--|',
-        '003_5_|6-6|5-3_2_|3,4_3_2_|1-6._7._|1-2_3_|2,7._5.|6.--|',
-        '000|3-3|2,1_7.|1-2|3-3_5_|6-6|7,6_5_2_|3--|',
-        '003_5_|6-6|5-3_2_|3,4_3_2_|1-6._7._|1-2_3_|2,7._5._|',
-        '6.--|035|6--|7--|7-2。|',
-        '1。-6_6_|6-6|5,6_5_2_|43-|035|',
-        '6--|7--|5#-7|1。--|1-3|',
-        '2,7._5._|6.--|000'
+      const singleDuration = 100 / 60
+      const notationItem = [
+        '0006_7_|1。,7_1。3。|7--3_3_|6,5_61。|5--3|4,3_41。',
+        '|3-0_1。_1。_1。_|7,4#_47|7-06_7_|1。,7_1。3。|7--3_3_|6,5_61。',
+        '|5--2_3_|41。_7_7_1。_1。|2。_2。_3。_1。0|1。_7_6_6_75#|6--1。_2。_|3。,2。_3。5。',
+        '|2。--5_5_|1。,7_1。3。|3。---|6_7_1。72。_2。_|1。,5_5-|4。3。2。1。',
+        '|3。--3。|6。-5。5。|3。_2。_1。-0_1。_|2。1。_2。_2。5。|3。--3。|6。-5。-',
+        '|3。_2。_1。-0_1。_|2。1。_2。_2。7|6-'
       ]
-      const notationResult = analyzeNotation(notationItem2.join(), defaultDuration)
-      displayNotation(notationResult, singleDuration)
+
+      // 假如爱有天意
+      // const singleDuration = 100 / 60
+      // const notationItem = [
+      //   '3-3|2,1_7.|1-2|3-3_5_|6-6|7,6_5_2_|3--|',
+      //   '003_5_|6-6|5-3_2_|3,4_3_2_|1-6._7._|1-2_3_|2,7._5.|6.--|',
+      //   '000|3-3|2,1_7.|1-2|3-3_5_|6-6|7,6_5_2_|3--|',
+      //   '003_5_|6-6|5-3_2_|3,4_3_2_|1-6._7._|1-2_3_|2,7._5._|6.--|',
+      //   '035|6--|7--|7-2。|1。-6_6_|6-6|5,6_5_2_|43-|',
+      //   '035|6--|7--|5#-7|1。--|1-3|2,7._5._|6.--|000'
+      // ]
+
+      // 送别
+      // const singleDuration = 60 / 70 * 3
+      // const notationItem = [
+      //   '53_5_1。-|61。5-|51_2_32_1_|2---|',
+      //   '53_5_1。-|61。5-|52_3_4,7._|1---|',
+      //   '61。1。-|76_7_1。-|6_7_1。_6_6_5_3_1_|2---|',
+      //   '53_5_1。,7_|61。5-|52_3_4,7._|1---'
+      // ]
+      const notationResult = analyzeNotation(notationItem.join(), defaultDuration)
+      await displayNotation(notationResult, singleDuration)
     }
 
     onMounted(() => {
@@ -435,10 +460,6 @@ export default {
       //   displayDb()
       // }, 2000)
     })
-
-    const handleCancel = item => {
-      state.cacheHole[item.pitch].cancel()
-    }
 
     return {
       ...toRefs(state),
