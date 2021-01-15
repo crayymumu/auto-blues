@@ -34,6 +34,7 @@ import WebAudioFontPlayer from 'webaudiofont'
 import { reactive, toRefs, onMounted } from 'vue'
 import tone from '@/lib/tone'
 import { barStandard } from '@/constant'
+import notations from '@/lib/notations'
 import { isNumber, parseInt } from 'lodash'
 
 export default {
@@ -409,50 +410,14 @@ export default {
       }
     }
 
-    const displayDb = async() => {
+    const displayDb = () => {
+      const displayNotion = notations[4]
       if (state.audioContext.state === 'running') {
         state.totalDuration = state.audioContext.currentTime
       }
       const defaultDuration = barStandard.semiquaver.multiple
-      /**
-       * _ 半音
-       * , 附点音符
-       * - 持续单音
-       * . 低音
-       * 。高音
-       */
-      // 天空之城
-      const singleDuration = 100 / 60
-      const notationItem = [
-        '0006_7_|1。,7_1。3。|7--3_3_|6,5_61。|5--3|4,3_41。',
-        '|3-0_1。_1。_1。_|7,4#_47|7-06_7_|1。,7_1。3。|7--3_3_|6,5_61。',
-        '|5--2_3_|41。_7_7_1。_1。|2。_2。_3。_1。0|1。_7_6_6_75#|6--1。_2。_|3。,2。_3。5。',
-        '|2。--5_5_|1。,7_1。3。|3。---|6_7_1。72。_2。_|1。,5_5-|4。3。2。1。',
-        '|3。--3。|6。-5。5。|3。_2。_1。-0_1。_|2。1。_2。_2。5。|3。--3。|6。-5。-',
-        '|3。_2。_1。-0_1。_|2。1。_2。_2。7|6-'
-      ]
-
-      // 假如爱有天意
-      // const singleDuration = 100 / 60
-      // const notationItem = [
-      //   '3-3|2,1_7.|1-2|3-3_5_|6-6|7,6_5_2_|3--|',
-      //   '003_5_|6-6|5-3_2_|3,4_3_2_|1-6._7._|1-2_3_|2,7._5.|6.--|',
-      //   '000|3-3|2,1_7.|1-2|3-3_5_|6-6|7,6_5_2_|3--|',
-      //   '003_5_|6-6|5-3_2_|3,4_3_2_|1-6._7._|1-2_3_|2,7._5._|6.--|',
-      //   '035|6--|7--|7-2。|1。-6_6_|6-6|5,6_5_2_|43-|',
-      //   '035|6--|7--|5#-7|1。--|1-3|2,7._5._|6.--|000'
-      // ]
-
-      // 送别
-      // const singleDuration = 60 / 70 * 3
-      // const notationItem = [
-      //   '53_5_1。-|61。5-|51_2_32_1_|2---|',
-      //   '53_5_1。-|61。5-|52_3_4,7._|1---|',
-      //   '61。1。-|76_7_1。-|6_7_1。_6_6_5_3_1_|2---|',
-      //   '53_5_1。,7_|61。5-|52_3_4,7._|1---'
-      // ]
-      const notationResult = analyzeNotation(notationItem.join(), defaultDuration)
-      await displayNotation(notationResult, singleDuration)
+      const notationResult = analyzeNotation(displayNotion.sheetMusic, defaultDuration)
+      displayNotation(notationResult, displayNotion.speed)
     }
 
     onMounted(() => {
