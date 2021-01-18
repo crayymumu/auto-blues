@@ -1,7 +1,7 @@
 /**
  * 节拍标准
  */
-export const barStandard: object = {
+export const BarStandard: object = {
   semibreve: {
     multiple: 4
   },
@@ -23,4 +23,16 @@ export const barStandard: object = {
   hemidemisemiquaver: {
     multiple: 1 / 16
   }
+}
+
+// 口琴演奏种类
+export enum DisplayType {
+  Blow = 'blow',
+  Draw ='draw',
+  // 超吹
+  OverBlow = 'overBlow',
+  // 压音
+  OverBend = 'overBlow',
+  // 超吸
+  OverDraw = 'overDraw'
 }

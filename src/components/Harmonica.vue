@@ -1,31 +1,45 @@
 <template>
   <section class="harmonica">
     <button @mousedown="displayDb()" />
-    <!--    <div class="cover">-->
-    <!--      <span class="screws left" />-->
-    <!--      <span class="plate" />-->
-    <!--      <span class="screws right" />-->
-    <!--    </div>-->
-    <!--    <div class="reeds blow" />-->
-    <!--    <div class="comb">-->
-    <!--      <div-->
-    <!--        v-for="(holeItem, holeKey) in cBottomHarmonicaHoles"-->
-    <!--        :key="holeKey"-->
-    <!--        class="holes"-->
-    <!--        :data-hole="holeKey+1"-->
-    <!--        @mousedown="handleCacheNote(holeItem.pitch, 10)"-->
-    <!--        @mouseup="handleCancel(holeItem)"-->
-    <!--      >-->
-    <!--        <span class="reed" />-->
-    <!--        <span class="rivet" />-->
-    <!--      </div>-->
-    <!--    </div>-->
-    <!--    <div class="reeds draw" />-->
-    <!--    <div class="cover">-->
-    <!--      <span class="screws bottom left" />-->
-    <!--      <span class="plate bottom" />-->
-    <!--      <span class="screws bottom right" />-->
-    <!--    </div>-->
+    <div class="cover">
+      <span class="screws left" />
+      <span class="plate" />
+      <span class="screws right" />
+    </div>
+    <div class="reeds blow" />
+    <div class="comb">
+      <div
+        v-for="(holeItem, holeKey) in harmonicaHoles"
+        :key="holeKey"
+        class="holes"
+        :data-hole="holeKey+1"
+      >
+        <div
+          :class="{
+            'tips-top bubble': true,
+            'visible': holeItem.blow.bubbleVisible
+          }"
+        >
+          吹
+        </div>
+        <div
+          :class="{
+            'tips-bottom bubble': true,
+            'visible': holeItem.draw.bubbleVisible
+          }"
+        >
+          吸
+        </div>
+        <span class="reed" />
+        <span class="rivet" />
+      </div>
+    </div>
+    <div class="reeds draw" />
+    <div class="cover">
+      <span class="screws bottom left" />
+      <span class="plate bottom" />
+      <span class="screws bottom right" />
+    </div>
   </section>
 </template>
 
@@ -33,7 +47,7 @@
 import WebAudioFontPlayer from 'webaudiofont'
 import { reactive, toRefs, onMounted } from 'vue'
 import tone from '@/lib/tone'
-import { barStandard } from '@/constant'
+import { BarStandard, DisplayType } from '@/constant'
 import notations from '@/lib/notations'
 import { isNumber, parseInt } from 'lodash'
 
@@ -48,258 +62,286 @@ export default {
     props.test
 
     const state = reactive({
-      cTopHarmonicaHoles: [
+      harmonicaHoles: [
         {
-          scale: 'do',
-          scaleNumber: '1.',
-          pitch: tone['C5'],
-          special: [
-            {
-              type: 'overBlow',
-              scale: 're',
-              scaleNumber: '2.#',
-              pitch: tone['D#5'],
-            }
-          ],
+          blow: {
+            scale: 'do',
+            scaleNumber: '1.',
+            pitch: tone['C5'],
+            special: [
+              {
+                type: DisplayType.OverBlow,
+                scale: 're',
+                scaleNumber: '2.#',
+                pitch: tone['D#5'],
+              }
+            ],
+          },
+          draw: {
+            scale: 're',
+            scaleNumber: '2.',
+            pitch: tone['D5'],
+            special: [
+              {
+                type: DisplayType.OverBend,
+                scale: 'do',
+                scaleNumber: '2.b',
+                pitch: tone['C#5'],
+              },
+            ]
+          },
         },
         {
-          scale: 'mi',
-          scaleNumber: '3.',
-          pitch: tone['E5'],
+          blow: {
+            scale: 'mi',
+            scaleNumber: '3.',
+            pitch: tone['E5'],
+          },
+          draw: {
+            scale: 'so',
+            scaleNumber: '5.',
+            pitch: tone['G5'],
+            special: [
+              {
+                type: DisplayType.OverBend,
+                scale: 'fa',
+                scaleNumber: '5.b',
+                pitch: tone['F#5'],
+              },
+              {
+                type: DisplayType.OverBend,
+                scale: 'fa',
+                scaleNumber: '4.',
+                pitch: tone['F5'],
+              },
+            ]
+          },
         },
         {
-          scale: 'so',
-          scaleNumber: '5.',
-          pitch: tone['G5'],
+          blow: {
+            scale: 'so',
+            scaleNumber: '5.',
+            pitch: tone['G5'],
+          },
+          draw: {
+            scale: 'si',
+            scaleNumber: '7.',
+            pitch: tone['B5'],
+            special: [
+              {
+                type: DisplayType.OverBend,
+                scale: 'la',
+                scaleNumber: '7.b',
+                pitch: tone['A#5'],
+              },
+              {
+                type: DisplayType.OverBend,
+                scale: 'la',
+                scaleNumber: '6.',
+                pitch: tone['A5'],
+              },
+              {
+                type: DisplayType.OverBend,
+                scale: 'so',
+                scaleNumber: '6.b',
+                pitch: tone['G#5'],
+              },
+            ]
+          },
         },
         {
-          scale: 'do',
-          scaleNumber: '1',
-          pitch: tone['C6'],
-          special: [
-            {
-              type: 'overBlow',
-              scale: 're',
-              scaleNumber: '2#',
-              pitch: tone['D#6'],
-            }
-          ],
+          blow: {
+            scale: 'do',
+            scaleNumber: '1',
+            pitch: tone['C6'],
+            special: [
+              {
+                type: DisplayType.OverBlow,
+                scale: 're',
+                scaleNumber: '2#',
+                pitch: tone['D#6'],
+              }
+            ],
+          },
+          draw: {
+            scale: 're',
+            scaleNumber: '2',
+            pitch: tone['D6'],
+            special: [
+              {
+                type: DisplayType.OverBend,
+                scale: 're',
+                scaleNumber: '2b',
+                pitch: tone['C#6'],
+              }
+            ]
+          },
         },
         {
-          scale: 'mi',
-          scaleNumber: '3',
-          pitch: tone['E6'],
-          special: [
-            {
-              type: 'overBlow',
-              scale: 'fa',
-              scaleNumber: '4#',
-              pitch: tone['F#6'],
-            }
-          ],
+          blow: {
+            scale: 'mi',
+            scaleNumber: '3',
+            pitch: tone['E6'],
+            special: [
+              {
+                type: DisplayType.OverBlow,
+                scale: 'fa',
+                scaleNumber: '4#',
+                pitch: tone['F#6'],
+              }
+            ],
+          },
+          draw: {
+            scale: 'fa',
+            scaleNumber: '4',
+            pitch: tone['F6']
+          },
         },
         {
-          scale: 'so',
-          scaleNumber: '5',
-          pitch: tone['G6'],
-          special: [
-            {
-              type: 'overBlow',
-              scale: 'la',
-              scaleNumber: '6#',
-              pitch: tone['A#6'],
-            },
-            {
-              type: 'overBend',
-              scale: 'so',
-              scaleNumber: '5#',
-              pitch: tone['G#6'],
-            }
-          ],
+          blow: {
+            scale: 'so',
+            scaleNumber: '5',
+            pitch: tone['G6'],
+            special: [
+              {
+                type: DisplayType.OverBlow,
+                scale: 'la',
+                scaleNumber: '6#',
+                pitch: tone['A#6'],
+              },
+              {
+                type: DisplayType.OverBend,
+                scale: 'so',
+                scaleNumber: '5#',
+                pitch: tone['G#6'],
+              }
+            ],
+          },
+          draw: {
+            scale: 'la',
+            scaleNumber: '6',
+            pitch: tone['A6'],
+            special: [
+              {
+                type: DisplayType.OverBend,
+                scale: 'la',
+                scaleNumber: '6b',
+                pitch: tone['G#6'],
+              }
+            ]
+          },
         },
         {
-          scale: 'do',
-          scaleNumber: '1。',
-          pitch: tone['C7'],
+          blow: {
+            scale: 'do',
+            scaleNumber: '1。',
+            pitch: tone['C7'],
+          },
+          draw: {
+            scale: 'si',
+            scaleNumber: '7',
+            pitch: tone['B6'],
+            special: [
+              {
+                type: DisplayType.OverDraw,
+                scale: 'do',
+                scaleNumber: '1。#',
+                pitch: tone['C#7'],
+              }
+            ]
+          },
         },
         {
-          scale: 'mi',
-          scaleNumber: '3。',
-          pitch: tone['E7'],
-          special: [
-            {
-              type: 'overBend',
-              scale: 're',
-              scaleNumber: '3。b',
-              pitch: tone['D#7'],
-            }
-          ],
+          blow: {
+            scale: 'mi',
+            scaleNumber: '3。',
+            pitch: tone['E7'],
+            special: [
+              {
+                type: DisplayType.OverBend,
+                scale: 're',
+                scaleNumber: '3。b',
+                pitch: tone['D#7'],
+              }
+            ],
+          },
+          draw: {
+            scale: 're',
+            scaleNumber: '2。',
+            pitch: tone['D7']
+          },
         },
         {
-          scale: 'so',
-          scaleNumber: '5。',
-          pitch: tone['G7'],
-          special: [
-            {
-              type: 'overBend',
-              scale: 'fa',
-              scaleNumber: '5。b',
-              pitch: tone['F#7'],
-            }
-          ],
+          blow: {
+            scale: 'so',
+            scaleNumber: '5。',
+            pitch: tone['G7'],
+            special: [
+              {
+                type: DisplayType.OverBend,
+                scale: 'fa',
+                scaleNumber: '5。b',
+                pitch: tone['F#7'],
+              }
+            ],
+          },
+          draw: {
+            scale: 'fa',
+            scaleNumber: '4。',
+            pitch: tone['F7'],
+            special: [
+              {
+                type: DisplayType.OverDraw,
+                scale: 'so',
+                scaleNumber: '5。#',
+                pitch: tone['G#7'],
+              }
+            ]
+          },
         },
         {
-          scale: 'do',
-          scaleNumber: '5。。',
-          pitch: tone['C8'],
-          special: [
-            {
-              type: 'overBend',
-              scale: 'si',
-              scaleNumber: '7。',
-              pitch: tone['B7'],
-            },
-            {
-              type: 'overBend',
-              scale: 'la',
-              scaleNumber: '7。b',
-              pitch: tone['A#7'],
-            },
-          ],
-        },
-      ],
-      cBottomHarmonicaHoles: [
-        {
-          scale: 're',
-          scaleNumber: '2.',
-          pitch: tone['D5'],
-          special: [
-            {
-              type: 'overBend',
-              scale: 'do',
-              scaleNumber: '2.b',
-              pitch: tone['C#5'],
-            },
-          ]
-        },
-        {
-          scale: 'so',
-          scaleNumber: '5.',
-          pitch: tone['G5'],
-          special: [
-            {
-              type: 'overBend',
-              scale: 'fa',
-              scaleNumber: '5.b',
-              pitch: tone['F#5'],
-            },
-            {
-              type: 'overBend',
-              scale: 'fa',
-              scaleNumber: '4.',
-              pitch: tone['F5'],
-            },
-          ]
-        },
-        {
-          scale: 'si',
-          scaleNumber: '7.',
-          pitch: tone['B5'],
-          special: [
-            {
-              type: 'overBend',
-              scale: 'la',
-              scaleNumber: '7.b',
-              pitch: tone['A#5'],
-            },
-            {
-              type: 'overBend',
-              scale: 'la',
-              scaleNumber: '6.',
-              pitch: tone['A5'],
-            },
-            {
-              type: 'overBend',
-              scale: 'so',
-              scaleNumber: '6.b',
-              pitch: tone['G#5'],
-            },
-          ]
-        },
-        {
-          scale: 're',
-          scaleNumber: '2',
-          pitch: tone['D6'],
-          special: [
-            {
-              type: 'overBend',
-              scale: 're',
-              scaleNumber: '2b',
-              pitch: tone['C#6'],
-            }
-          ]
-        },
-        {
-          scale: 'fa',
-          scaleNumber: '4',
-          pitch: tone['F6']
-        },
-        {
-          scale: 'la',
-          scaleNumber: '6',
-          pitch: tone['A6'],
-          special: [
-            {
-              type: 'overBend',
-              scale: 'la',
-              scaleNumber: '6b',
-              pitch: tone['G#6'],
-            }
-          ]
-        },
-        {
-          scale: 'si',
-          scaleNumber: '7',
-          pitch: tone['B6'],
-          special: [
-            {
-              type: 'overDraw',
-              scale: 'do',
-              scaleNumber: '1。#',
-              pitch: tone['C#7'],
-            }
-          ]
-        },
-        {
-          scale: 're',
-          scaleNumber: '2。',
-          pitch: tone['D7']
-        },
-        {
-          scale: 'fa',
-          scaleNumber: '4。',
-          pitch: tone['F7'],
-          special: [
-            {
-              type: 'overDraw',
-              scale: 'so',
-              scaleNumber: '5。#',
-              pitch: tone['G#7'],
-            }
-          ]
-        },
-        {
-          scale: 'la',
-          scaleNumber: '6。',
-          pitch: tone['A7']
+          blow: {
+            scale: 'do',
+            scaleNumber: '5。。',
+            pitch: tone['C8'],
+            special: [
+              {
+                type: DisplayType.OverBend,
+                scale: 'si',
+                scaleNumber: '7。',
+                pitch: tone['B7'],
+              },
+              {
+                type: DisplayType.OverBend,
+                scale: 'la',
+                scaleNumber: '7。b',
+                pitch: tone['A#7'],
+              },
+            ],
+          },
+          draw: {
+            scale: 'la',
+            scaleNumber: '6。',
+            pitch: tone['A7']
+          },
         },
       ],
       instr: null,
       player: null,
       audioContext: null,
       cacheHole: {},
-      totalDuration: 0
+      totalDuration: 0,
+      lastDuration: 0,
     })
+
+    const initAllBubble = () => {
+      state.harmonicaHoles.forEach(harmonicaItem => {
+        harmonicaItem.draw.bubbleVisible = false
+        harmonicaItem.blow.bubbleVisible = false
+      })
+    }
+
+    initAllBubble()
 
     const AudioContextFunc = window.AudioContext || window.webkitAudioContext
     state.audioContext = new AudioContextFunc()
@@ -386,22 +428,50 @@ export default {
         let displayDuration = 0
         const notationItem = notationResult[i]
         if (notationItem.note !== '0') {
-          const allHoles = state.cTopHarmonicaHoles.concat(state.cBottomHarmonicaHoles)
-          allHoles.forEach(holeItem => {
-            // 基本吹奏
-            if (holeItem.scaleNumber === notationItem.note) {
-              const envelope = display(state.totalDuration, holeItem.pitch, notationItem.duration * singleDuration)
-              displayDuration = envelope.duration
-            }
-            // 技巧吹奏
-            if (holeItem.special && holeItem.special.length > 0) {
-              holeItem.special.forEach(specialItem => {
-                if (specialItem.scaleNumber === notationItem.note) {
-                  const envelope = display(state.totalDuration, specialItem.pitch, notationItem.duration * singleDuration)
-                  displayDuration = envelope.duration
-                }
-              })
-            }
+          state.harmonicaHoles.forEach(holeItem => {
+            const allScale = []
+            allScale.push(Object.assign(holeItem.blow, {
+              type: DisplayType.Blow
+            }))
+            allScale.push(Object.assign(holeItem.draw, {
+              type: DisplayType.Draw
+            }))
+            allScale.forEach(scaleItem => {
+              // 基本吹奏
+              if (scaleItem.scaleNumber === notationItem.note) {
+                const envelope = display(state.totalDuration, scaleItem.pitch, notationItem.duration * singleDuration)
+                displayDuration = envelope.duration
+                setTimeout(() => {
+                  if (scaleItem.type === DisplayType.Blow) {
+                    holeItem.blow.bubbleVisible = true
+                  } else if (scaleItem.type === DisplayType.Draw) {
+                    holeItem.draw.bubbleVisible = true
+                  }
+                }, (state.totalDuration - state.lastDuration) * 1000)
+                setTimeout(() => {
+                  initAllBubble()
+                }, (state.totalDuration - state.lastDuration + displayDuration) * 1000)
+              }
+              // 技巧吹奏
+              if (scaleItem.special && scaleItem.special.length > 0) {
+                scaleItem.special.forEach(specialItem => {
+                  if (specialItem.scaleNumber === notationItem.note) {
+                    const envelope = display(state.totalDuration, specialItem.pitch, notationItem.duration * singleDuration)
+                    displayDuration = envelope.duration
+                    setTimeout(() => {
+                      if (scaleItem.type === DisplayType.Blow) {
+                        holeItem.blow.bubbleVisible = true
+                      } else if (scaleItem.type === DisplayType.Draw) {
+                        holeItem.draw.bubbleVisible = true
+                      }
+                    }, (state.totalDuration - state.lastDuration) * 1000)
+                    setTimeout(() => {
+                      initAllBubble()
+                    }, (state.totalDuration - state.lastDuration + displayDuration) * 1000)
+                  }
+                })
+              }
+            })
           })
         } else {
           displayDuration = notationItem.duration * singleDuration
@@ -411,11 +481,12 @@ export default {
     }
 
     const displayDb = () => {
-      const displayNotion = notations[4]
+      const displayNotion = notations[0]
       if (state.audioContext.state === 'running') {
+        state.lastDuration = state.audioContext.currentTime
         state.totalDuration = state.audioContext.currentTime
       }
-      const defaultDuration = barStandard.semiquaver.multiple
+      const defaultDuration = BarStandard.semiquaver.multiple
       const notationResult = analyzeNotation(displayNotion.sheetMusic, defaultDuration)
       displayNotation(notationResult, displayNotion.speed)
     }
@@ -519,6 +590,33 @@ export default {
       background-color: black;
       position: relative;
       cursor: pointer;
+
+      .tips-top {
+        position: absolute;
+        bottom: 60px;
+      }
+
+      .tips-bottom {
+        position: absolute;
+        top: 60px;
+      }
+
+      .bubble {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        color: white;
+        background-image: linear-gradient(90deg, rgba(133,68,12, .9) 50%, transparent 50%),
+        linear-gradient(90deg, rgba(133,68,12, .9) 50%, transparent 50%),
+        linear-gradient(90deg, transparent 50%, rgba(133,68,12, .9) 50%),
+        linear-gradient(90deg, transparent 50%, rgba(133,68,12, .9) 50%);
+        transform: scale(0, 0);
+        transition: transform 0.2s ease 0s;
+      }
+
+      .visible {
+        transform: scale(1, 1);
+      }
 
       &:hover {
         background-color: white;
