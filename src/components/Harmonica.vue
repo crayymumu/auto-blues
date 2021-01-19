@@ -53,13 +53,13 @@ import { isNumber, parseInt } from 'lodash'
 
 export default {
   props: {
-    test: {
-      type: String,
+    mode: {
+      type: Boolean,
       required: true
     }
   },
   setup(props) {
-    props.test
+    props.mode
 
     const state = reactive({
       harmonicaHoles: [
