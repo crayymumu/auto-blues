@@ -1,6 +1,6 @@
 <template>
   <section class="harmonica">
-    <button @mousedown="displayDb()" />
+    <!--    <button @mousedown="displayTargetNotion()" />-->
     <div class="cover">
       <span class="screws left" />
       <span class="plate" />
@@ -326,14 +326,18 @@ export default {
           },
         },
       ],
-      instr: null,
-      player: null,
-      audioContext: null,
+      webAudioConfig: {
+        audioContext: null,
+        instr: null,
+        player: null,
+      },
       cacheHole: {},
       totalDuration: 0,
       lastDuration: 0,
+      loading: false,
     })
 
+    // 初始化所有气泡状态
     const initAllBubble = () => {
       state.harmonicaHoles.forEach(harmonicaItem => {
         harmonicaItem.draw.bubbleVisible = false
@@ -341,25 +345,27 @@ export default {
       })
     }
 
-    initAllBubble()
+    // 加载 webAudio 对应音色
+    const loadWebAudio = () => {
+      const AudioContextFunc = window.AudioContext || window.webkitAudioContext
+      state.webAudioConfig.audioContext = new AudioContextFunc()
+      state.webAudioConfig.player = new WebAudioFontPlayer()
+      const path = 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/harmonica1.js'
+      const name = '_tone_0220_Aspirin_sf2_file'
 
-    const AudioContextFunc = window.AudioContext || window.webkitAudioContext
-    state.audioContext = new AudioContextFunc()
-    state.player = new WebAudioFontPlayer()
-    const path = 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/harmonica1.js'
-    const name = '_tone_0220_Aspirin_sf2_file'
-    state.player.loader.startLoad(state.audioContext, path, name)
-
-    state.player.loader.waitLoad(() => {
-      state.instr = window[name]
-    })
+      state.webAudioConfig.player.loader.startLoad(state.webAudioConfig.audioContext, path, name)
+      state.webAudioConfig.player.loader.waitLoad(() => {
+        state.loading = false
+        state.webAudioConfig.instr = window[name]
+      })
+    }
 
     // 根据频率和持续时长发声
     const display = (when, pitch, duration) => {
-      return state.player.queueWaveTable(
-        state.audioContext,
-        state.audioContext.destination,
-        state.instr,
+      return state.webAudioConfig.player.queueWaveTable(
+        state.webAudioConfig.audioContext,
+        state.webAudioConfig.audioContext.destination,
+        state.webAudioConfig.instr,
         when,
         pitch,
         duration,
@@ -480,20 +486,27 @@ export default {
       }
     }
 
-    const displayDb = () => {
+    const displayTargetNotion = () => {
       const displayNotion = notations[0]
-      if (state.audioContext.state === 'running') {
-        state.lastDuration = state.audioContext.currentTime
-        state.totalDuration = state.audioContext.currentTime
+      // hack：记录上一首谱子的持续时间，并将当前时间作为演绎的开始时间
+      if (state.webAudioConfig.audioContext.state === 'running') {
+        state.lastDuration = state.webAudioConfig.audioContext.currentTime
+        state.totalDuration = state.webAudioConfig.audioContext.currentTime
       }
       const defaultDuration = BarStandard.semiquaver.multiple
       const notationResult = analyzeNotation(displayNotion.sheetMusic, defaultDuration)
       displayNotation(notationResult, displayNotion.speed)
     }
 
+    state.loading = true
+
+    initAllBubble()
+
+    loadWebAudio()
+
     onMounted(() => {
       // setTimeout(() => {
-      //   displayDb()
+      //   displayTargetNotion()
       // }, 2000)
     })
 
@@ -501,7 +514,7 @@ export default {
       ...toRefs(state),
       handleCacheNote,
       handleCancel,
-      displayDb
+      displayTargetNotion,
     }
   }
 }
