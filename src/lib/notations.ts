@@ -1,3 +1,5 @@
+import { NotationItem } from '@/constant/types';
+
 /**
  * _ 半音
  * , 附点音符
@@ -5,9 +7,12 @@
  * . 低音
  * 。高音
  */
-const notationList = [
+const notationList: Array<NotationItem> = [
   {
-    name: '爱尔兰画眉',
+    detail: {
+      name: '爱尔兰画眉',
+      author: '爱尔兰画眉',
+    },
     speed: 120 / 60,
     sheetMusic: [
       '1_2_|32_1_23_5_|6-51。_5_|65_3_21_2_|3--1_2_|',
@@ -18,7 +23,10 @@ const notationList = [
     ].join()
   },
   {
-    name: '天空之城',
+    detail: {
+      name: '天空之城',
+      author: '天空之城',
+    },
     speed: 100 / 60,
     sheetMusic: [
       '0006_7_|1。,7_1。3。|7--3_3_|6,5_61。|5--3|4,3_41。',
@@ -30,7 +38,10 @@ const notationList = [
     ].join()
   },
   {
-    name: '假如爱有天意',
+    detail: {
+      name: '假如爱有天意',
+      author: '假如爱有天意',
+    },
     speed: 100 / 60,
     sheetMusic: [
       '3-3|2,1_7.|1-2|3-3_5_|6-6|7,6_5_2_|3--|',
@@ -42,7 +53,10 @@ const notationList = [
     ].join()
   },
   {
-    name: '送别',
+    detail: {
+      name: '送别',
+      author: '送别',
+    },
     speed: 100 / 60,
     sheetMusic: [
       '53_5_1。-|61。5-|51_2_32_1_|2---|',
@@ -52,7 +66,10 @@ const notationList = [
     ].join()
   },
   {
-    name: 'Mojito',
+    detail: {
+      name: 'Mojito',
+      author: 'Mojito',
+    },
     speed: 110 / 60,
     sheetMusic: [
       '0_3._6._1_|3_2_1_2_1_7._6._7._|1_6._00_3._6._1_|3_2_1_2_1_7._6._7._|',
@@ -67,7 +84,10 @@ const notationList = [
     ].join()
   },
   {
-    name: '双门洞',
+    detail: {
+      name: '双门洞',
+      author: '双门洞',
+    },
     speed: 98 / 60,
     sheetMusic: [
       '3_4_|55_2。_2。1。|77_7_7_1。_7|76_5_1。_1。_6_|',

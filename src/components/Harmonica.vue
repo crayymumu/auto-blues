@@ -15,16 +15,16 @@
         :data-hole="holeKey+1"
       >
         <div
+          class="tips-top bubble"
           :class="{
-            'tips-top bubble': true,
             'visible': holeItem.blow.bubbleVisible
           }"
         >
           吹
         </div>
         <div
+          class="tips-bottom bubble"
           :class="{
-            'tips-bottom bubble': true,
             'visible': holeItem.draw.bubbleVisible
           }"
         >
@@ -45,10 +45,10 @@
 
 <script>
 import WebAudioFontPlayer from 'webaudiofont'
-import { reactive, toRefs, onMounted } from 'vue'
+import { reactive, toRefs, onMounted, watch } from 'vue'
 import tone from '@/lib/tone'
 import { BarStandard, DisplayType } from '@/constant'
-import notations from '@/lib/notations'
+import notations from '@/lib/notations.ts'
 import { isNumber, parseInt } from 'lodash'
 
 export default {
@@ -338,10 +338,10 @@ export default {
     })
 
     // 初始化所有气泡状态
-    const initAllBubble = () => {
+    const initAllBubble = (flag = false) => {
       state.harmonicaHoles.forEach(harmonicaItem => {
-        harmonicaItem.draw.bubbleVisible = false
-        harmonicaItem.blow.bubbleVisible = false
+        harmonicaItem.draw.bubbleVisible = flag
+        harmonicaItem.blow.bubbleVisible = flag
       })
     }
 
@@ -510,6 +510,18 @@ export default {
       // }, 2000)
     })
 
+    watch(
+      () => props.mode,
+      (val) => {
+        console.log(val)
+        if (val) {
+          initAllBubble(true)
+        } else {
+          initAllBubble()
+        }
+      }
+    )
+
     return {
       ...toRefs(state),
       handleCacheNote,
@@ -629,10 +641,6 @@ export default {
 
       .visible {
         transform: scale(1, 1);
-      }
-
-      &:hover {
-        background-color: white;
       }
 
       &:before {
