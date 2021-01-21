@@ -14,9 +14,11 @@
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0",
+    "vuex-module-decorators": "^1.0.1",
     "webaudiofont": "^2.5.53"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.168",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",

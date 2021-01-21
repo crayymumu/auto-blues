@@ -11,8 +11,8 @@
           </button>
 
           <button class="player__button player__button--absolute--center play" @click="handlePlay">
-            <img v-show="playStatus" src="http://physical-authority.surge.sh/imgs/icon/play.svg" alt="play-icon">
-            <img v-show="!playStatus" src="http://physical-authority.surge.sh/imgs/icon/pause.svg" alt="pause-icon">
+            <img v-show="!getCurrentPlayStatus" src="http://physical-authority.surge.sh/imgs/icon/play.svg" alt="play-icon">
+            <img v-show="getCurrentPlayStatus" src="http://physical-authority.surge.sh/imgs/icon/pause.svg" alt="pause-icon">
           </button>
 
           <div
@@ -39,14 +39,14 @@
           <transition name="opacity">
             <p class="player__context slider__context" @click="handleExpand">
               <strong class="slider__name">
-                {{ notationList[currentIndex].detail.author }}
+                {{ getCurrentNotation.detail.author }}
               </strong>
               <span class="player__title slider__title">
                 <span
                   :class="{
-                    'text-wrap': notationList[currentIndex].detail.name.length > 5
+                    'text-wrap': getCurrentNotation.detail.name.length > 5
                   }"
-                >{{ notationList[currentIndex].detail.name }}</span>
+                >{{ getCurrentNotation.detail.name }}</span>
               </span>
             </p>
           </transition>
@@ -61,7 +61,7 @@
         </div>
       </div>
       <ul class="player__playlist list">
-        <li v-for="(songItem, songIndex) in notationList" :key="`song${songIndex}`" class="player__song">
+        <li v-for="(songItem, songIndex) in notationList" :key="`song${songIndex}`" class="player__song" @click="handlePlay(songIndex)">
           <img class="player__img img" src="http://physical-authority.surge.sh/imgs/1.jpg" alt="cover">
           <p class="player__context">
             <b class="player__song-name">{{ songItem.detail.name }}</b>
@@ -80,6 +80,8 @@
 import { reactive, toRefs, onMounted, computed } from 'vue';
 import notations from '@/lib/notations.ts'
 import { NotationItem } from '@/constant/types';
+import { notationStore } from '@/store/modules/notation.ts';
+import { isNumber } from 'lodash'
 
 export default {
   setup() {
@@ -90,8 +92,6 @@ export default {
       playerHeaderClass: Array<string>;
       playControlClass: Array<string>;
       sliderClass: Array<string>;
-      currentIndex: number;
-      playStatus: boolean;
     }>({
       currentTime: 0,
       duration: 0,
@@ -99,8 +99,6 @@ export default {
       playerHeaderClass: [],
       playControlClass: [],
       sliderClass: [],
-      currentIndex: 0,
-      playStatus: true
     })
 
     const handleExpand = () => {
@@ -115,27 +113,45 @@ export default {
       state.sliderClass.pop()
     }
 
+    const getCurrentNotation = computed(() => {
+      return notationStore.getCurrentNotation
+    });
+
+    const getCurrentPlayStatus = computed(() => {
+      return notationStore.getPlayStatus
+    });
+
     const handleNext = () => {
-      state.currentIndex++
-      if (state.currentIndex === notations.length) {
-        state.currentIndex = 0
+      let nextIndex = notationStore.getCurrentNotationIndex + 1
+      if (nextIndex === notations.length) {
+        nextIndex = 0
       }
+      notationStore.commitCurrentNotation(nextIndex)
     }
 
     const handlePre = () => {
-      state.currentIndex--
-      if (state.currentIndex === -1) {
-        state.currentIndex = 0
+      let preIndex = notationStore.getCurrentNotationIndex - 1
+      if (preIndex === -1) {
+        preIndex = 0
       }
+      notationStore.commitCurrentNotation(preIndex)
     }
 
-    const handlePlay = () => {
-      state.playStatus = !state.playStatus
+    const handlePlay = (index: number) => {
+      if (isNumber(index)) {
+        notationStore.playNotation(index)
+        return
+      }
+      if (getCurrentPlayStatus.value) {
+        notationStore.pauseNotation()
+      } else {
+        notationStore.playNotation(notationStore.getCurrentNotationIndex)
+      }
     }
 
     const sliderContentTransform = computed(() => {
       const sliderWidth = 100
-      const left = state.currentIndex * sliderWidth
+      const left = notationStore.getCurrentNotationIndex * sliderWidth
       return `translate3d(-${left}%, 0, 0)`
     })
 
@@ -341,6 +357,8 @@ export default {
     return {
       ...toRefs(state),
       sliderContentTransform,
+      getCurrentNotation,
+      getCurrentPlayStatus,
       handleExpand,
       handleCollapse,
       handleNext,
