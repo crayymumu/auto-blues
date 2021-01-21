@@ -9,7 +9,11 @@ export interface DurationItem {
 export interface NotationItem {
   speed: number,
   sheetMusic: string,
-  detail: { name: string; author: string; }
+  detail: {
+    name: string;
+    author: string;
+    image: string
+  }
   // detail: {
   //   [string:string]: {
   //     name: string,

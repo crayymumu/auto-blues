@@ -6,37 +6,52 @@
         :class="playerHeaderClass"
       >
         <div class="player__img player__img--absolute slider" :class="sliderClass">
-          <button class="player__button player__button--absolute--nw playlist" @click="closePlayer">
+          <button class="player__button player__button--absolute--nw playlist" @click="handleCollapse">
             <img src="http://physical-authority.surge.sh/imgs/icon/playlist.svg" alt="playlist-icon">
           </button>
 
-          <button class="player__button player__button--absolute--center play">
-            <img src="http://physical-authority.surge.sh/imgs/icon/play.svg" alt="play-icon">
-            <img src="http://physical-authority.surge.sh/imgs/icon/pause.svg" alt="pause-icon">
+          <button class="player__button player__button--absolute--center play" @click="handlePlay">
+            <img v-show="playStatus" src="http://physical-authority.surge.sh/imgs/icon/play.svg" alt="play-icon">
+            <img v-show="!playStatus" src="http://physical-authority.surge.sh/imgs/icon/pause.svg" alt="pause-icon">
           </button>
 
-          <div class="slider__content">
-            <img class="img slider__img" src="http://physical-authority.surge.sh/imgs/1.jpg" alt="cover">
-            <img class="img slider__img" src="http://physical-authority.surge.sh/imgs/2.jpg" alt="cover">
-            <img class="img slider__img" src="http://physical-authority.surge.sh/imgs/3.jpg" alt="cover">
-            <img class="img slider__img" src="http://physical-authority.surge.sh/imgs/4.jpg" alt="cover">
-            <img class="img slider__img" src="http://physical-authority.surge.sh/imgs/5.jpg" alt="cover">
-            <img class="img slider__img" src="http://physical-authority.surge.sh/imgs/6.jpg" alt="cover">
-            <img class="img slider__img" src="http://physical-authority.surge.sh/imgs/7.jpg" alt="cover">
+          <div
+            class="slider__content"
+            :style="{
+              'transform': sliderContentTransform
+            }"
+          >
+            <img
+              v-for="imageItem in notationList"
+              :key="`img${imageItem.detail.name}`"
+              :src="imageItem.detail.image"
+              class="img slider__img"
+              alt="cover"
+            >
           </div>
         </div>
 
         <div class="player__controls" :class="playControlClass">
-          <button class="player__button back">
+          <button class="player__button back" @click="handlePre">
             <img class="img" src="http://physical-authority.surge.sh/imgs/icon/back.svg" alt="back-icon">
           </button>
 
-          <p class="player__context slider__context" @click="openPlayer">
-            <strong class="slider__name" />
-            <span class="player__title slider__title" />
-          </p>
+          <transition name="opacity">
+            <p class="player__context slider__context" @click="handleExpand">
+              <strong class="slider__name">
+                {{ notationList[currentIndex].detail.author }}
+              </strong>
+              <span class="player__title slider__title">
+                <span
+                  :class="{
+                    'text-wrap': notationList[currentIndex].detail.name.length > 5
+                  }"
+                >{{ notationList[currentIndex].detail.name }}</span>
+              </span>
+            </p>
+          </transition>
 
-          <button class="player__button next">
+          <button class="player__button next" @click="handleNext">
             <img class="img" src="http://physical-authority.surge.sh/imgs/icon/next.svg" alt="next-icon">
           </button>
 
@@ -55,7 +70,6 @@
               <span class="player__song-time" />
             </span>
           </p>
-          <!--          <audio class="audio" src="http://physical-authority.surge.sh/music/1.mp3" />-->
         </li>
       </ul>
     </div>
@@ -63,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, toRefs, onMounted } from 'vue';
+import { reactive, toRefs, onMounted, computed } from 'vue';
 import notations from '@/lib/notations.ts'
 import { NotationItem } from '@/constant/types';
 
@@ -76,6 +90,8 @@ export default {
       playerHeaderClass: Array<string>;
       playControlClass: Array<string>;
       sliderClass: Array<string>;
+      currentIndex: number;
+      playStatus: boolean;
     }>({
       currentTime: 0,
       duration: 0,
@@ -83,26 +99,45 @@ export default {
       playerHeaderClass: [],
       playControlClass: [],
       sliderClass: [],
+      currentIndex: 0,
+      playStatus: true
     })
 
-    // creat functions
-    const openPlayer = () => {
+    const handleExpand = () => {
       state.playerHeaderClass.push('open-header')
       state.playControlClass.push('move')
       state.sliderClass.push('open-slider')
-      // playerHeader.classList.add('open-header');
-      // playerControls.classList.add('move');
-      // slider.classList.add('open-slider');
     }
 
-    const closePlayer = () => {
+    const handleCollapse = () => {
       state.playerHeaderClass.pop()
       state.playControlClass.pop()
       state.sliderClass.pop()
-      // playerHeader.classList.remove('open-header');
-      // playerControls.classList.remove('move');
-      // slider.classList.remove('open-slider');
     }
+
+    const handleNext = () => {
+      state.currentIndex++
+      if (state.currentIndex === notations.length) {
+        state.currentIndex = 0
+      }
+    }
+
+    const handlePre = () => {
+      state.currentIndex--
+      if (state.currentIndex === -1) {
+        state.currentIndex = 0
+      }
+    }
+
+    const handlePlay = () => {
+      state.playStatus = !state.playStatus
+    }
+
+    const sliderContentTransform = computed(() => {
+      const sliderWidth = 100
+      const left = state.currentIndex * sliderWidth
+      return `translate3d(-${left}%, 0, 0)`
+    })
 
     onMounted(() => {
       // add elements
@@ -115,9 +150,9 @@ export default {
       const playerPlayList = player.querySelectorAll('.player__song');
       const playerSongs = player.querySelectorAll('.audio');
 
-      const playButton = player.querySelector('.play');
-      const nextButton = player.querySelector('.next');
-      const backButton = player.querySelector('.back');
+      // const playButton = player.querySelector('.play');
+      // const nextButton = player.querySelector('.next');
+      // const backButton = player.querySelector('.back');
 
       // const playlistButton = player.querySelector('.playlist');
       const slider = player.querySelector('.slider');
@@ -131,14 +166,14 @@ export default {
       let count = 0;
       let song = playerSongs[count];
       let isPlay = false;
-      const pauseIcon = playButton.querySelector("img[alt = 'pause-icon']");
-      const playIcon = playButton.querySelector("img[alt = 'play-icon']");
+      // const pauseIcon = playButton.querySelector("img[alt = 'pause-icon']");
+      // const playIcon = playButton.querySelector("img[alt = 'play-icon']");
       const progress = player.querySelector('.progress');
       // const progresFilled = progres.querySelector('.progres__filled');
       let isMove = false;
 
       function changeSliderContext() {
-        sliderContext.style.animationName = 'opacity';
+        // sliderContext.style.animationName = 'opacity';
 
         sliderName.textContent = playerPlayList[count].querySelector('.player__title').textContent;
         sliderTitle.textContent = playerPlayList[count].querySelector('.player__song-name').textContent;
@@ -192,40 +227,40 @@ export default {
         selectSong();
       }
 
-      function back() {
-        if (count === 0) {
-          return
-        }
+      // function back() {
+      //   if (count === 0) {
+      //     return
+      //   }
+      //
+      //   left -= sliderWidth;
+      //   left = Math.max(0, left);
+      //   sliderContent.style.transform = `translate3d(-${left}%, 0, 0)`;
+      //   count--;
+      // }
 
-        left -= sliderWidth;
-        left = Math.max(0, left);
-        sliderContent.style.transform = `translate3d(-${left}%, 0, 0)`;
-        count--;
-      }
-
-      function playSong() {
-        if (song.paused) {
-          song.play();
-          playIcon.style.display = 'none';
-          pauseIcon.style.display = 'block';
-        } else {
-          song.pause();
-          isPlay = false;
-          playIcon.style.display = '';
-          pauseIcon.style.display = '';
-        }
-      }
+      // function playSong() {
+      //   if (song.paused) {
+      //     song.play();
+      //     // playIcon.style.display = 'none';
+      //     // pauseIcon.style.display = 'block';
+      //   } else {
+      //     song.pause();
+      //     isPlay = false;
+      //     // playIcon.style.display = '';
+      //     // pauseIcon.style.display = '';
+      //   }
+      // }
 
       function progressUpdate() {
-        // const progresFilledWidth = (state.currentTime / state.duration) * 100 + '%';
-        // progresFilled.style.width = progresFilledWidth;
+        // const progressFilledWidth = (state.currentTime / state.duration) * 100 + '%';
+        // progressFilled.style.width = progressFilledWidth;
 
         if (state.duration === state.currentTime) {
           next();
         }
         if (count === sliderContentLength && song.currentTime === song.duration) {
-          playIcon.style.display = 'block';
-          pauseIcon.style.display = '';
+          // playIcon.style.display = 'block';
+          // pauseIcon.style.display = '';
           isPlay = false;
         }
       }
@@ -257,28 +292,28 @@ export default {
         player.querySelector('.player__song-time').append(playerSongTime);
       }
 
-      changeSliderContext();
+      // changeSliderContext();
 
       // add events
-      // sliderContext.addEventListener('click', openPlayer);
-      sliderContext.addEventListener('animationend', () => {
-        sliderContext.style.animationName = ''
-      });
-      // playlistButton.addEventListener('click', closePlayer);
+      // sliderContext.addEventListener('click', handleExpand);
+      // sliderContext.addEventListener('animationend', () => {
+      //   sliderContext.style.animationName = ''
+      // });
+      // playlistButton.addEventListener('click', handleCollapse);
 
-      nextButton.addEventListener('click', next);
+      // nextButton.addEventListener('click', next);
 
-      backButton.addEventListener('click', () => {
-        back();
-        changeSliderContext();
-        changeBgBody();
-        selectSong();
-      });
+      // backButton.addEventListener('click', () => {
+      //   back();
+      //   changeSliderContext();
+      //   changeBgBody();
+      //   selectSong();
+      // });
 
-      playButton.addEventListener('click', () => {
-        isPlay = true;
-        playSong();
-      });
+      // playButton.addEventListener('click', () => {
+      //   isPlay = true;
+      //   playSong();
+      // });
 
       playerSongs.forEach((song: { addEventListener: (arg0: string, arg1: { (): void; (): void }) => void }) => {
         song.addEventListener('loadeddata', durationSongs);
@@ -305,8 +340,12 @@ export default {
 
     return {
       ...toRefs(state),
-      openPlayer,
-      closePlayer,
+      sliderContentTransform,
+      handleExpand,
+      handleCollapse,
+      handleNext,
+      handlePre,
+      handlePlay,
     }
   },
 }
@@ -334,7 +373,7 @@ export default {
 
 .notations{
   margin: 0 ;
-  height: 250px ;
+  height: 100% ;
   display: flex ;
   user-select: none ;
   align-items: center ;
@@ -492,10 +531,6 @@ export default {
   position: absolute ;
 }
 
-img[alt ="pause-icon"] {
-  display: none ;
-}
-
 .player__controls {
   width: 77% ;
   gap: .5em 0 ;
@@ -530,7 +565,11 @@ img[alt ="pause-icon"] {
   padding-bottom: .2em ;
   will-change: contents ;
   transition: width var(--cubic-header) ;
-  animation: calc(var(--duration) / 2) var(--cubic-slider-context) ;
+  //animation: calc(var(--duration) / 2) var(--cubic-slider-context) ;
+}
+
+.opacity-enter-to, .opacity-leave-to {
+  animation: opacity calc(var(--duration) / 2) var(--cubic-slider-context);
 }
 
 @keyframes opacity {

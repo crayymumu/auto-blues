@@ -10,8 +10,9 @@ import { NotationItem } from '@/constant/types';
 const notationList: Array<NotationItem> = [
   {
     detail: {
-      name: '爱尔兰画眉',
+      name: '爱尔兰画眉爱尔兰画眉爱尔兰画眉',
       author: '爱尔兰画眉',
+      image: 'http://physical-authority.surge.sh/imgs/1.jpg',
     },
     speed: 120 / 60,
     sheetMusic: [
@@ -26,6 +27,7 @@ const notationList: Array<NotationItem> = [
     detail: {
       name: '天空之城',
       author: '天空之城',
+      image: 'http://physical-authority.surge.sh/imgs/2.jpg',
     },
     speed: 100 / 60,
     sheetMusic: [
@@ -41,6 +43,7 @@ const notationList: Array<NotationItem> = [
     detail: {
       name: '假如爱有天意',
       author: '假如爱有天意',
+      image: 'http://physical-authority.surge.sh/imgs/3.jpg',
     },
     speed: 100 / 60,
     sheetMusic: [
@@ -56,6 +59,7 @@ const notationList: Array<NotationItem> = [
     detail: {
       name: '送别',
       author: '送别',
+      image: 'http://physical-authority.surge.sh/imgs/4.jpg',
     },
     speed: 100 / 60,
     sheetMusic: [
@@ -69,6 +73,7 @@ const notationList: Array<NotationItem> = [
     detail: {
       name: 'Mojito',
       author: 'Mojito',
+      image: 'http://physical-authority.surge.sh/imgs/5.jpg',
     },
     speed: 110 / 60,
     sheetMusic: [
@@ -87,6 +92,7 @@ const notationList: Array<NotationItem> = [
     detail: {
       name: '双门洞',
       author: '双门洞',
+      image: 'http://physical-authority.surge.sh/imgs/6.jpg',
     },
     speed: 98 / 60,
     sheetMusic: [
