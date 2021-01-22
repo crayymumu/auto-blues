@@ -12,7 +12,7 @@ const notationList: Array<NotationItem> = [
     detail: {
       name: 'Down by the Salley Gardens',
       author: 'Madden',
-      image: 'http://physical-authority.surge.sh/imgs/1.jpg',
+      image: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/cover/ai.jpg',
     },
     speed: 120 / 60,
     beat: 1 / 4,
@@ -28,7 +28,7 @@ const notationList: Array<NotationItem> = [
     detail: {
       name: '天空の城ラピュタ',
       author: 'Joe Hisaishi',
-      image: 'http://physical-authority.surge.sh/imgs/2.jpg',
+      image: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/cover/tian.jpg',
     },
     speed: 100 / 60,
     beat: 1 / 4,
@@ -45,7 +45,7 @@ const notationList: Array<NotationItem> = [
     detail: {
       name: '사랑하면 할수록',
       author: '韩成民（한성민）',
-      image: 'http://physical-authority.surge.sh/imgs/3.jpg',
+      image: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/cover/chen.jpg',
     },
     speed: 100 / 60,
     beat: 1 / 4,
@@ -62,7 +62,7 @@ const notationList: Array<NotationItem> = [
     detail: {
       name: '送别',
       author: '李叔同',
-      image: 'http://physical-authority.surge.sh/imgs/4.jpg',
+      image: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/cover/song.jpg',
     },
     speed: 100 / 60,
     beat: 1 / 4,
@@ -77,7 +77,7 @@ const notationList: Array<NotationItem> = [
     detail: {
       name: 'Mojito',
       author: '周董',
-      image: 'http://physical-authority.surge.sh/imgs/5.jpg',
+      image: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/cover/mojito.png',
     },
     speed: 110 / 60,
     beat: 1 / 4,
@@ -97,7 +97,7 @@ const notationList: Array<NotationItem> = [
     detail: {
       name: '双门洞',
       author: '双门洞',
-      image: 'http://physical-authority.surge.sh/imgs/6.jpg',
+      image: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/cover/shuang.jpg',
     },
     speed: 98 / 60,
     beat: 1 / 4,

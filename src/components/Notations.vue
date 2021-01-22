@@ -7,12 +7,12 @@
       >
         <div class="player__img player__img--absolute slider" :class="sliderClass">
           <button class="player__button player__button--absolute--nw playlist" @click="handleCollapse">
-            <img src="http://physical-authority.surge.sh/imgs/icon/playlist.svg" alt="playlist-icon">
+            <img src="../assets/svg/playlist.svg" alt="playlist-icon">
           </button>
 
           <button class="player__button player__button--absolute--center play" @click="handlePlay">
-            <img v-show="!getCurrentPlayStatus" src="http://physical-authority.surge.sh/imgs/icon/play.svg" alt="play-icon">
-            <img v-show="getCurrentPlayStatus" src="http://physical-authority.surge.sh/imgs/icon/pause.svg" alt="pause-icon">
+            <img v-show="!getCurrentPlayStatus" src="../assets/svg/play.svg" alt="play-icon">
+            <img v-show="getCurrentPlayStatus" src="../assets/svg/pause.svg" alt="pause-icon">
           </button>
 
           <div
@@ -33,7 +33,7 @@
 
         <div class="player__controls" :class="playControlClass">
           <button class="player__button back" @click="handlePre">
-            <img class="img" src="http://physical-authority.surge.sh/imgs/icon/back.svg" alt="back-icon">
+            <img class="img" src="../assets/svg/back.svg" alt="back-icon">
           </button>
 
           <transition name="opacity">
@@ -52,7 +52,7 @@
           </transition>
 
           <button class="player__button next" @click="handleNext">
-            <img class="img" src="http://physical-authority.surge.sh/imgs/icon/next.svg" alt="next-icon">
+            <img class="img" src="../assets/svg/next.svg" alt="next-icon">
           </button>
 
           <!--          <div class="progress">-->
@@ -62,7 +62,7 @@
       </div>
       <ul class="player__playlist list">
         <li v-for="(songItem, songIndex) in notationList" :key="`song${songIndex}`" class="player__song" @click="handlePlay(songIndex)">
-          <img class="player__img img" src="http://physical-authority.surge.sh/imgs/1.jpg" alt="cover">
+          <img class="player__img img" :src="songItem.detail.image" alt="cover">
           <p class="player__context">
             <b class="player__song-name">{{ songItem.detail.name }}</b>
             <span class="flex">
@@ -592,7 +592,7 @@ export default {
 }
 
 .slider__context {
-  width: 100px;
+  width: 40%;
   cursor: pointer ;
   text-align: center ;
   padding-bottom: .2em ;

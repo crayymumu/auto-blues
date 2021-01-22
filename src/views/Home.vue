@@ -13,7 +13,10 @@
             <span class="perform-tips">Perform</span>
           </div>
         </div>
-        <Harmonica :mode="modeValue" />
+        <div class="placeholder">&nbsp;</div>
+        <div class="harmonica-item">
+          <Harmonica :mode="modeValue" />
+        </div>
       </div>
     </div>
   </div>
@@ -73,6 +76,7 @@ export default {
     .harmonica-container {
       flex: 4;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       position: relative;
@@ -175,6 +179,12 @@ export default {
             top: 14px;
           }
         }
+      }
+      .placeholder {
+        flex: 2;
+      }
+      .harmonica-item {
+        flex: 2;
       }
     }
   }

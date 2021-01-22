@@ -18,6 +18,8 @@
           :class="{
             'visible': holeItem.blow.bubbleVisible
           }"
+          @touchstart="handleCacheNote(holeItem.blow.pitch, 10)"
+          @touchend="handleCancel(holeItem.blow)"
         >
           吹
         </div>
@@ -26,6 +28,8 @@
           :class="{
             'visible': holeItem.draw.bubbleVisible
           }"
+          @touchstart="handleCacheNote(holeItem.draw.pitch, 10)"
+          @touchend="handleCancel(holeItem.draw)"
         >
           吸
         </div>
@@ -386,10 +390,12 @@ export default {
     }
 
     const handleCacheNote = (pitch, duration, when = 0) => {
+      console.log('按下')
       state.cacheHole[pitch] = display(when, pitch, duration)
     }
 
     const handleCancel = item => {
+      console.log('取消')
       state.cacheHole[item.pitch].cancel()
     }
 
@@ -557,6 +563,18 @@ export default {
     )
 
     watch(
+      () => notationStore.getCurrentNotationIndex,
+      () => {
+        stopDisplay()
+        state.holeDelay.forEach(delayItem => {
+          clearTimeout(delayItem.timeout)
+        })
+        notationStore.commitPlayStatus(true)
+        displayTargetNotion()
+      }
+    )
+
+    watch(
       () => notationStore.getPlayStatus,
       (val) => {
         console.log('演奏持续时间', state.webAudioConfig.audioContext.currentTime - state.lastDuration)
@@ -691,9 +709,11 @@ export default {
       .tips-bottom {
         position: absolute;
         top: 60px;
+        user-select: none;
       }
 
       .bubble {
+        user-select: none;
         width: 25px;
         height: 25px;
         border-radius: 50%;
