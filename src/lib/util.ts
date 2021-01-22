@@ -1,7 +1,12 @@
 import { TreatedNotation } from '@/constant/types.ts';
 import { isNumber, isNaN } from 'lodash'
 
-export function analyzeNotation(sheetMusic: string, defaultDuration: number) {
+/**
+ * 解析语义简谱
+ * @param sheetMusic
+ * @param beat
+ */
+export function analyzeNotation(sheetMusic: string, beat: number) {
   let notationResult: Array<TreatedNotation> = []
   sheetMusic
     // 1. 分拍拆分
@@ -22,7 +27,7 @@ export function analyzeNotation(sheetMusic: string, defaultDuration: number) {
       // console.log(notes)
       // 3. 将乐符及对应时间确认，最后拼凑成完整的乐谱
       const notesDisplay: Array<TreatedNotation> = notes.map(noteItem => {
-        let duration = defaultDuration
+        let duration = beat
         let note = noteItem.charAt(0)
         for (let i = 1; i < noteItem.length; i++) {
           const targetNote = noteItem.charAt(i)
@@ -31,9 +36,9 @@ export function analyzeNotation(sheetMusic: string, defaultDuration: number) {
             continue
           }
           if (targetNote === '-') {
-            duration += defaultDuration
+            duration += beat
           } else if (targetNote === ',') {
-            duration += defaultDuration / 2
+            duration += beat / 2
           } else if (targetNote === '_') {
             duration = duration / 2
           }
@@ -46,5 +51,18 @@ export function analyzeNotation(sheetMusic: string, defaultDuration: number) {
       notationResult = notationResult.concat(notesDisplay)
     })
   return notationResult
+}
+
+/**
+ * 获取解析后的简谱演奏总时长
+ * @param notationResult
+ * @param speed
+ */
+export function getNotationTotalDuration(notationResult: TreatedNotation[], speed: number) {
+  let duration = 0
+  notationResult.forEach(treatedNotationItem => {
+    duration += treatedNotationItem.duration * speed
+  })
+  return duration
 }
 

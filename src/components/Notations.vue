@@ -160,7 +160,7 @@ export default {
       const notationResult: TreatedNotation[] = analyzeNotation(notion.sheetMusic, notion.beat)
       let duration = 0
       notationResult.forEach(treatedNotationItem => {
-        duration += treatedNotationItem.duration
+        duration += treatedNotationItem.duration * notion.speed
       })
       duration = parseInt(duration.toString())
       const min: number = parseInt((duration / 60).toString());
@@ -440,7 +440,6 @@ export default {
 }
 
 .player {
-  width: 17.15em ;
   display: flex ;
   overflow: hidden ;
   font-size: 1.22em ;
@@ -593,7 +592,7 @@ export default {
 }
 
 .slider__context {
-  width: 56.28% ;
+  width: 100px;
   cursor: pointer ;
   text-align: center ;
   padding-bottom: .2em ;

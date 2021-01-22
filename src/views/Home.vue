@@ -66,12 +66,12 @@ export default {
     width: calc(100% - 20px);
     height: calc(100% - 20px);
     .notations-container {
-      flex: 1;
+      flex: 3;
       height: 100%;
       width: 100%;
     }
     .harmonica-container {
-      flex: 1;
+      flex: 4;
       display: flex;
       align-items: center;
       justify-content: center;

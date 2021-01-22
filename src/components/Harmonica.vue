@@ -335,7 +335,8 @@ export default {
       lastDuration: 0,
       loading: false,
       holeDelay: [],
-      notationCache: {}
+      notationCache: {},
+      currentDisplay: null,
     })
 
     // const getCurrentPlayStatus = computed(() => {
@@ -365,6 +366,11 @@ export default {
         state.loading = false
         state.webAudioConfig.instr = window[name]
       })
+    }
+
+    // 停止演奏
+    const stopDisplay = () => {
+      state.webAudioConfig.player.cancelQueue(state.webAudioConfig.audioContext)
     }
 
     // 根据频率和持续时长发声
@@ -508,6 +514,10 @@ export default {
         }
         state.totalDuration += displayDuration
       }
+      setTimeout(() => {
+        stopDisplay()
+        notationStore.pauseNotation()
+      }, (state.totalDuration - state.lastDuration) * 1000)
     }
 
     const displayTargetNotion = (displayNotion = notationStore.getCurrentNotation) => {
@@ -565,7 +575,7 @@ export default {
           }
         } else {
           console.log('暂停前', state.notationCache)
-          state.webAudioConfig.player.cancelQueue(state.webAudioConfig.audioContext)
+          stopDisplay()
           state.holeDelay.forEach(delayItem => {
             clearTimeout(delayItem.timeout)
           })
