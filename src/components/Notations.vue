@@ -55,9 +55,9 @@
             <img class="img" src="http://physical-authority.surge.sh/imgs/icon/next.svg" alt="next-icon">
           </button>
 
-          <div class="progress">
-            <div class="progress__filled" />
-          </div>
+          <!--          <div class="progress">-->
+          <!--            <div class="progress__filled" />-->
+          <!--          </div>-->
         </div>
       </div>
       <ul class="player__playlist list">
@@ -67,7 +67,7 @@
             <b class="player__song-name">{{ songItem.detail.name }}</b>
             <span class="flex">
               <span class="player__title">{{ songItem.detail.author }}</span>
-              <span class="player__song-time" />
+              <span class="player__song-time">{{ calcNotationDuration(songItem) }}</span>
             </span>
           </p>
         </li>
@@ -79,9 +79,10 @@
 <script lang="ts">
 import { reactive, toRefs, onMounted, computed } from 'vue';
 import notations from '@/lib/notations.ts'
-import { NotationItem } from '@/constant/types';
+import { NotationItem, TreatedNotation } from '@/constant/types';
 import { notationStore } from '@/store/modules/notation.ts';
 import { isNumber } from 'lodash'
+import { analyzeNotation } from '@/lib/util'
 
 export default {
   setup() {
@@ -155,93 +156,107 @@ export default {
       return `translate3d(-${left}%, 0, 0)`
     })
 
+    const calcNotationDuration = (notion: NotationItem) => {
+      const notationResult: TreatedNotation[] = analyzeNotation(notion.sheetMusic, notion.beat)
+      let duration = 0
+      notationResult.forEach(treatedNotationItem => {
+        duration += treatedNotationItem.duration
+      })
+      duration = parseInt(duration.toString())
+      const min: number = parseInt((duration / 60).toString());
+      const minStr = min < 10 ? '0' + min : '' + min;
+      const sec: number = parseInt((duration % 60).toString());
+      const secStr = sec < 10 ? '0' + sec : '' + sec;
+      return `${minStr}:${secStr}`;
+    }
+
     onMounted(() => {
       // add elements
-      const bgBody = ['#e5e7e9', '#ff4545', '#f8ded3', '#ffc382', '#f5eda6', '#ffcbdc', '#dcf3f3'];
-      const body = document.body;
-      // eslint-disable-next-line
-      const player = document.querySelector('.player') as any;
+      // const bgBody = ['#e5e7e9', '#ff4545', '#f8ded3', '#ffc382', '#f5eda6', '#ffcbdc', '#dcf3f3'];
+      // const body = document.body;
+      // // eslint-disable-next-line
+      // const player = document.querySelector('.player') as any;
       // const playerHeader = player.querySelector('.player__header');
       // const playerControls = player.querySelector('.player__controls');
-      const playerPlayList = player.querySelectorAll('.player__song');
-      const playerSongs = player.querySelectorAll('.audio');
+      // const playerPlayList = player.querySelectorAll('.player__song');
+      // const playerSongs = player.querySelectorAll('.audio');
 
       // const playButton = player.querySelector('.play');
       // const nextButton = player.querySelector('.next');
       // const backButton = player.querySelector('.back');
 
       // const playlistButton = player.querySelector('.playlist');
-      const slider = player.querySelector('.slider');
-      const sliderContext = player.querySelector('.slider__context');
-      const sliderName = sliderContext.querySelector('.slider__name');
-      const sliderTitle = sliderContext.querySelector('.slider__title');
-      const sliderContent = slider.querySelector('.slider__content');
-      const sliderContentLength = playerPlayList.length - 1;
-      const sliderWidth = 100;
-      let left = 0;
-      let count = 0;
-      let song = playerSongs[count];
-      let isPlay = false;
+      // const slider = player.querySelector('.slider');
+      // const sliderContext = player.querySelector('.slider__context');
+      // const sliderName = sliderContext.querySelector('.slider__name');
+      // const sliderTitle = sliderContext.querySelector('.slider__title');
+      // const sliderContent = slider.querySelector('.slider__content');
+      // const sliderContentLength = playerPlayList.length - 1;
+      // const sliderWidth = 100;
+      // let left = 0;
+      // let count = 0;
+      // let song = playerSongs[count];
+      // let isPlay = false;
       // const pauseIcon = playButton.querySelector("img[alt = 'pause-icon']");
       // const playIcon = playButton.querySelector("img[alt = 'play-icon']");
-      const progress = player.querySelector('.progress');
+      // const progress = player.querySelector('.progress');
       // const progresFilled = progres.querySelector('.progres__filled');
-      let isMove = false;
+      // let isMove = false;
 
-      function changeSliderContext() {
-        // sliderContext.style.animationName = 'opacity';
+      // function changeSliderContext() {
+      //   // sliderContext.style.animationName = 'opacity';
+      //
+      //   sliderName.textContent = playerPlayList[count].querySelector('.player__title').textContent;
+      //   sliderTitle.textContent = playerPlayList[count].querySelector('.player__song-name').textContent;
+      //
+      //   if (sliderName.textContent.length > 16) {
+      //     const textWrap = document.createElement('span');
+      //     textWrap.className = 'text-wrap';
+      //     textWrap.innerHTML = sliderName.textContent + '   ' + sliderName.textContent;
+      //     sliderName.innerHTML = '';
+      //     sliderName.append(textWrap);
+      //   }
+      //
+      //   if (sliderTitle.textContent.length >= 18) {
+      //     const textWrap = document.createElement('span');
+      //     textWrap.className = 'text-wrap';
+      //     textWrap.innerHTML = sliderTitle.textContent + '    ' + sliderTitle.textContent;
+      //     sliderTitle.innerHTML = '';
+      //     sliderTitle.append(textWrap);
+      //   }
+      // }
 
-        sliderName.textContent = playerPlayList[count].querySelector('.player__title').textContent;
-        sliderTitle.textContent = playerPlayList[count].querySelector('.player__song-name').textContent;
+      // function changeBgBody() {
+      //   body.style.backgroundColor = bgBody[count];
+      // }
 
-        if (sliderName.textContent.length > 16) {
-          const textWrap = document.createElement('span');
-          textWrap.className = 'text-wrap';
-          textWrap.innerHTML = sliderName.textContent + '   ' + sliderName.textContent;
-          sliderName.innerHTML = '';
-          sliderName.append(textWrap);
-        }
+      // function selectSong() {
+      //   song = playerSongs[count];
+      //
+      //   for (const item of playerSongs) {
+      //     if (item !== song) {
+      //       item.pause();
+      //       item.currentTime = 0;
+      //     }
+      //   }
+      //
+      //   if (isPlay) song.play();
+      // }
 
-        if (sliderTitle.textContent.length >= 18) {
-          const textWrap = document.createElement('span');
-          textWrap.className = 'text-wrap';
-          textWrap.innerHTML = sliderTitle.textContent + '    ' + sliderTitle.textContent;
-          sliderTitle.innerHTML = '';
-          sliderTitle.append(textWrap);
-        }
-      }
-
-      function changeBgBody() {
-        body.style.backgroundColor = bgBody[count];
-      }
-
-      function selectSong() {
-        song = playerSongs[count];
-
-        for (const item of playerSongs) {
-          if (item !== song) {
-            item.pause();
-            item.currentTime = 0;
-          }
-        }
-
-        if (isPlay) song.play();
-      }
-
-      function next() {
-        if (count === sliderContentLength) {
-          return
-        }
-
-        left += sliderWidth;
-        left = Math.min(left, (sliderContentLength) * sliderWidth);
-        sliderContent.style.transform = `translate3d(-${left}%, 0, 0)`;
-        count++;
-
-        changeSliderContext();
-        changeBgBody();
-        selectSong();
-      }
+      // function next() {
+      //   if (count === sliderContentLength) {
+      //     return
+      //   }
+      //
+      //   left += sliderWidth;
+      //   left = Math.min(left, (sliderContentLength) * sliderWidth);
+      //   sliderContent.style.transform = `translate3d(-${left}%, 0, 0)`;
+      //   count++;
+      //
+      //   changeSliderContext();
+      //   changeBgBody();
+      //   selectSong();
+      // }
 
       // function back() {
       //   if (count === 0) {
@@ -267,46 +282,46 @@ export default {
       //   }
       // }
 
-      function progressUpdate() {
-        // const progressFilledWidth = (state.currentTime / state.duration) * 100 + '%';
-        // progressFilled.style.width = progressFilledWidth;
+      // function progressUpdate() {
+      //   // const progressFilledWidth = (state.currentTime / state.duration) * 100 + '%';
+      //   // progressFilled.style.width = progressFilledWidth;
+      //
+      //   if (state.duration === state.currentTime) {
+      //     next();
+      //   }
+      //   if (count === sliderContentLength && song.currentTime === song.duration) {
+      //     // playIcon.style.display = 'block';
+      //     // pauseIcon.style.display = '';
+      //     isPlay = false;
+      //   }
+      // }
 
-        if (state.duration === state.currentTime) {
-          next();
-        }
-        if (count === sliderContentLength && song.currentTime === song.duration) {
-          // playIcon.style.display = 'block';
-          // pauseIcon.style.display = '';
-          isPlay = false;
-        }
-      }
+      // function scurb(e: MouseEvent) {
+      //   // If we use e.offsetX, we have trouble setting the song time, when the mousemove is running
+      //   const currentTime = ((e.clientX - progress.getBoundingClientRect().left) / progress.offsetWidth) * song.duration;
+      //   song.currentTime = currentTime;
+      // }
 
-      function scurb(e: MouseEvent) {
-        // If we use e.offsetX, we have trouble setting the song time, when the mousemove is running
-        const currentTime = ((e.clientX - progress.getBoundingClientRect().left) / progress.offsetWidth) * song.duration;
-        song.currentTime = currentTime;
-      }
-
-      function durationSongs() {
-        const min = state.duration / 60;
-        let minStr = ''
-        if (min < 10) {
-          minStr = '0' + min;
-        } else {
-          minStr = '' + min
-        }
-
-        const sec = state.duration % 60;
-        let secStr = ''
-        if (sec < 10) {
-          secStr = '0' + sec;
-        } else {
-          secStr = '' + sec;
-        }
-
-        const playerSongTime = `${minStr}:${secStr}`;
-        player.querySelector('.player__song-time').append(playerSongTime);
-      }
+      // function durationSongs() {
+      //   const min = state.duration / 60;
+      //   let minStr = ''
+      //   if (min < 10) {
+      //     minStr = '0' + min;
+      //   } else {
+      //     minStr = '' + min
+      //   }
+      //
+      //   const sec = state.duration % 60;
+      //   let secStr = ''
+      //   if (sec < 10) {
+      //     secStr = '0' + sec;
+      //   } else {
+      //     secStr = '' + sec;
+      //   }
+      //
+      //   const playerSongTime = `${minStr}:${secStr}`;
+      //   player.querySelector('.player__song-time').append(playerSongTime);
+      // }
 
       // changeSliderContext();
 
@@ -331,27 +346,27 @@ export default {
       //   playSong();
       // });
 
-      playerSongs.forEach((song: { addEventListener: (arg0: string, arg1: { (): void; (): void }) => void }) => {
-        song.addEventListener('loadeddata', durationSongs);
-        song.addEventListener('timeupdate', progressUpdate);
-      });
+      // playerSongs.forEach((song: { addEventListener: (arg0: string, arg1: { (): void; (): void }) => void }) => {
+      //   song.addEventListener('loadeddata', durationSongs);
+      //   song.addEventListener('timeupdate', progressUpdate);
+      // });
 
-      progress.addEventListener('mousedown', (e: MouseEvent) => {
-        scurb(e);
-        isMove = true;
-        song.muted = true;
-      });
+      // progress.addEventListener('mousedown', (e: MouseEvent) => {
+      //   scurb(e);
+      //   isMove = true;
+      //   song.muted = true;
+      // });
 
-      document.addEventListener('mousemove', (e: MouseEvent) => isMove && scurb(e));
-
-      document.addEventListener('mouseup', () => {
-        isMove = false
-        // song.muted = false;
-      });
-
-      document.ondragstart = () => {
-        return false
-      };
+      // document.addEventListener('mousemove', (e: MouseEvent) => isMove && scurb(e));
+      //
+      // document.addEventListener('mouseup', () => {
+      //   isMove = false
+      //   // song.muted = false;
+      // });
+      //
+      // document.ondragstart = () => {
+      //   return false
+      // };
     })
 
     return {
@@ -364,6 +379,7 @@ export default {
       handleNext,
       handlePre,
       handlePlay,
+      calcNotationDuration,
     }
   },
 }

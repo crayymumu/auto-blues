@@ -10,11 +10,12 @@ import { NotationItem } from '@/constant/types';
 const notationList: Array<NotationItem> = [
   {
     detail: {
-      name: '爱尔兰画眉爱尔兰画眉爱尔兰画眉',
-      author: '爱尔兰画眉',
+      name: 'Down by the Salley Gardens',
+      author: 'Madden',
       image: 'http://physical-authority.surge.sh/imgs/1.jpg',
     },
     speed: 120 / 60,
+    beat: 1 / 4,
     sheetMusic: [
       '1_2_|32_1_23_5_|6-51。_5_|65_3_21_2_|3--1_2_|',
       '32_1_23_5_|6-51。_5_|65_3_2,1_|1--5|1。7_5_61。_6_|',
@@ -25,11 +26,12 @@ const notationList: Array<NotationItem> = [
   },
   {
     detail: {
-      name: '天空之城',
-      author: '天空之城',
+      name: '天空の城ラピュタ',
+      author: 'Joe Hisaishi',
       image: 'http://physical-authority.surge.sh/imgs/2.jpg',
     },
     speed: 100 / 60,
+    beat: 1 / 4,
     sheetMusic: [
       '0006_7_|1。,7_1。3。|7--3_3_|6,5_61。|5--3|4,3_41。',
       '|3-0_1。_1。_1。_|7,4#_47|7-06_7_|1。,7_1。3。|7--3_3_|6,5_61。',
@@ -41,11 +43,12 @@ const notationList: Array<NotationItem> = [
   },
   {
     detail: {
-      name: '假如爱有天意',
-      author: '假如爱有天意',
+      name: '사랑하면 할수록',
+      author: '韩成民（한성민）',
       image: 'http://physical-authority.surge.sh/imgs/3.jpg',
     },
     speed: 100 / 60,
+    beat: 1 / 4,
     sheetMusic: [
       '3-3|2,1_7.|1-2|3-3_5_|6-6|7,6_5_2_|3--|',
       '003_5_|6-6|5-3_2_|3,4_3_2_|1-6._7._|1-2_3_|2,7._5.|6.--|',
@@ -58,10 +61,11 @@ const notationList: Array<NotationItem> = [
   {
     detail: {
       name: '送别',
-      author: '送别',
+      author: '李叔同',
       image: 'http://physical-authority.surge.sh/imgs/4.jpg',
     },
     speed: 100 / 60,
+    beat: 1 / 4,
     sheetMusic: [
       '53_5_1。-|61。5-|51_2_32_1_|2---|',
       '53_5_1。-|61。5-|52_3_4,7._|1---|',
@@ -72,10 +76,11 @@ const notationList: Array<NotationItem> = [
   {
     detail: {
       name: 'Mojito',
-      author: 'Mojito',
+      author: '周董',
       image: 'http://physical-authority.surge.sh/imgs/5.jpg',
     },
     speed: 110 / 60,
+    beat: 1 / 4,
     sheetMusic: [
       '0_3._6._1_|3_2_1_2_1_7._6._7._|1_6._00_3._6._1_|3_2_1_2_1_7._6._7._|',
       '100_6._1#_3_|5_4,0_5._7._2_|4_3,0_4._6._1_|3_2_2_3_2_1_7._6._|',
@@ -95,6 +100,7 @@ const notationList: Array<NotationItem> = [
       image: 'http://physical-authority.surge.sh/imgs/6.jpg',
     },
     speed: 98 / 60,
+    beat: 1 / 4,
     sheetMusic: [
       '3_4_|55_2。_2。1。|77_7_7_1。_7|76_5_1。_1。_6_|',
       '6_5_5,3_2_1_|1_1_1_3_3_3_1_2_|2_1_1_1_1_2_2|3_5_5_5_3_3_5|',

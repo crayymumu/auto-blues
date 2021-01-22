@@ -1,6 +1,5 @@
 <template>
   <section class="harmonica">
-    <!--    <button @mousedown="displayTargetNotion()" />-->
     <div class="cover">
       <span class="screws left" />
       <span class="plate" />
@@ -48,8 +47,8 @@ import WebAudioFontPlayer from 'webaudiofont'
 import { reactive, toRefs, onMounted, watch } from 'vue'
 import tone from '@/lib/tone'
 import { BarStandard, DisplayType } from '@/constant'
-import notations from '@/lib/notations.ts'
 import { isNumber, parseInt } from 'lodash'
+import { notationStore } from '@/store/modules/notation.ts';
 
 export default {
   props: {
@@ -335,7 +334,15 @@ export default {
       totalDuration: 0,
       lastDuration: 0,
       loading: false,
+      holeDelay: [],
+      notationCache: {}
     })
+
+    // const getCurrentPlayStatus = computed(() => {
+    //   return notationStore.getPlayStatus
+    // });
+    //
+    // getCurrentPlayStatus
 
     // 初始化所有气泡状态
     const initAllBubble = (flag = false) => {
@@ -442,21 +449,16 @@ export default {
             allScale.push(Object.assign(holeItem.draw, {
               type: DisplayType.Draw
             }))
-            allScale.forEach(scaleItem => {
+            for (let i = 0; i < allScale.length; i++) {
+              const scaleItem = allScale[i]
+              let findHoleStatus = false
+              let targetPitch = 0
               // 基本吹奏
               if (scaleItem.scaleNumber === notationItem.note) {
                 const envelope = display(state.totalDuration, scaleItem.pitch, notationItem.duration * singleDuration)
                 displayDuration = envelope.duration
-                setTimeout(() => {
-                  if (scaleItem.type === DisplayType.Blow) {
-                    holeItem.blow.bubbleVisible = true
-                  } else if (scaleItem.type === DisplayType.Draw) {
-                    holeItem.draw.bubbleVisible = true
-                  }
-                }, (state.totalDuration - state.lastDuration) * 1000)
-                setTimeout(() => {
-                  initAllBubble()
-                }, (state.totalDuration - state.lastDuration + displayDuration) * 1000)
+                findHoleStatus = true
+                targetPitch = scaleItem.pitch
               }
               // 技巧吹奏
               if (scaleItem.special && scaleItem.special.length > 0) {
@@ -464,20 +466,42 @@ export default {
                   if (specialItem.scaleNumber === notationItem.note) {
                     const envelope = display(state.totalDuration, specialItem.pitch, notationItem.duration * singleDuration)
                     displayDuration = envelope.duration
-                    setTimeout(() => {
-                      if (scaleItem.type === DisplayType.Blow) {
-                        holeItem.blow.bubbleVisible = true
-                      } else if (scaleItem.type === DisplayType.Draw) {
-                        holeItem.draw.bubbleVisible = true
-                      }
-                    }, (state.totalDuration - state.lastDuration) * 1000)
-                    setTimeout(() => {
-                      initAllBubble()
-                    }, (state.totalDuration - state.lastDuration + displayDuration) * 1000)
+                    findHoleStatus = true
+                    targetPitch = scaleItem.pitch
                   }
                 })
               }
-            })
+              if (findHoleStatus) {
+                const delayDuration = state.totalDuration - state.lastDuration
+                // 开始显示
+                const delayStart = setTimeout(() => {
+                  if (scaleItem.type === DisplayType.Blow) {
+                    holeItem.blow.bubbleVisible = true
+                  } else if (scaleItem.type === DisplayType.Draw) {
+                    holeItem.draw.bubbleVisible = true
+                  }
+                }, delayDuration * 1000)
+                // 结束显示
+                const delayEnd = setTimeout(() => {
+                  initAllBubble()
+                }, (delayDuration + displayDuration) * 1000)
+                state.holeDelay.push({
+                  type: 'start',
+                  when: delayDuration,
+                  timeout: delayStart,
+                  cache: {
+                    when: state.totalDuration,
+                    pitch: targetPitch,
+                    duration: displayDuration
+                  }
+                })
+                state.holeDelay.push({
+                  type: 'end',
+                  when: (delayDuration + displayDuration),
+                  timeout: delayEnd
+                })
+              }
+            }
           })
         } else {
           displayDuration = notationItem.duration * singleDuration
@@ -486,8 +510,7 @@ export default {
       }
     }
 
-    const displayTargetNotion = () => {
-      const displayNotion = notations[0]
+    const displayTargetNotion = (displayNotion = notationStore.getCurrentNotation) => {
       // hack：记录上一首谱子的持续时间，并将当前时间作为演绎的开始时间
       if (state.webAudioConfig.audioContext.state === 'running') {
         state.lastDuration = state.webAudioConfig.audioContext.currentTime
@@ -496,6 +519,10 @@ export default {
       const defaultDuration = BarStandard.semiquaver.multiple
       const notationResult = analyzeNotation(displayNotion.sheetMusic, defaultDuration)
       displayNotation(notationResult, displayNotion.speed)
+      state.notationCache = {
+        notation: notationResult,
+        speed: displayNotion.speed
+      }
     }
 
     state.loading = true
@@ -505,15 +532,12 @@ export default {
     loadWebAudio()
 
     onMounted(() => {
-      // setTimeout(() => {
-      //   displayTargetNotion()
-      // }, 2000)
+      // getCurrentPlayStatus
     })
 
     watch(
       () => props.mode,
       (val) => {
-        console.log(val)
         if (val) {
           initAllBubble(true)
         } else {
@@ -522,11 +546,44 @@ export default {
       }
     )
 
+    watch(
+      () => notationStore.getPlayStatus,
+      (val) => {
+        console.log('演奏持续时间', state.webAudioConfig.audioContext.currentTime - state.lastDuration)
+        const durationTime = state.webAudioConfig.audioContext.currentTime - state.lastDuration
+        if (val) {
+          if (state.notationCache.notation && state.notationCache.notation.length > 0) {
+            console.log('断点续奏')
+            // hack：记录上一首谱子的持续时间，并将当前时间作为演绎的开始时间
+            if (state.webAudioConfig.audioContext.state === 'running') {
+              state.lastDuration = state.webAudioConfig.audioContext.currentTime
+              state.totalDuration = state.webAudioConfig.audioContext.currentTime
+            }
+            displayNotation(state.notationCache.notation, state.notationCache.speed)
+          } else {
+            displayTargetNotion()
+          }
+        } else {
+          console.log('暂停前', state.notationCache)
+          state.webAudioConfig.player.cancelQueue(state.webAudioConfig.audioContext)
+          state.holeDelay.forEach(delayItem => {
+            clearTimeout(delayItem.timeout)
+          })
+          let currentTotal = 0
+          state.notationCache.notation.forEach(notationItem => {
+            currentTotal = currentTotal + notationItem.duration
+            notationItem.totalDuration = currentTotal
+          })
+          state.notationCache.notation = state.notationCache.notation.filter(notationItem => notationItem.totalDuration >= durationTime)
+          console.log('暂停后', state.notationCache)
+        }
+      }
+    )
+
     return {
       ...toRefs(state),
       handleCacheNote,
       handleCancel,
-      displayTargetNotion,
     }
   }
 }

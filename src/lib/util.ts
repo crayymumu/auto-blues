@@ -1,0 +1,50 @@
+import { TreatedNotation } from '@/constant/types.ts';
+import { isNumber, isNaN } from 'lodash'
+
+export function analyzeNotation(sheetMusic: string, defaultDuration: number) {
+  let notationResult: Array<TreatedNotation> = []
+  sheetMusic
+    // 1. 分拍拆分
+    .split('|')
+    // 2. 将每一拍中的乐符
+    .forEach(notationItem => {
+      let start = 0
+      const notes = []
+      for (let i = 1; i < notationItem.length; i++) {
+        if (!isNaN(parseInt(notationItem.charAt(i))) && isNumber(parseInt(notationItem.charAt(i)))) {
+          notes.push(notationItem.substring(start, i))
+          start = i
+        }
+        if (i === notationItem.length - 1) {
+          notes.push(notationItem.substring(start, i + 1))
+        }
+      }
+      // console.log(notes)
+      // 3. 将乐符及对应时间确认，最后拼凑成完整的乐谱
+      const notesDisplay: Array<TreatedNotation> = notes.map(noteItem => {
+        let duration = defaultDuration
+        let note = noteItem.charAt(0)
+        for (let i = 1; i < noteItem.length; i++) {
+          const targetNote = noteItem.charAt(i)
+          if (targetNote === '.' || targetNote === '。' || targetNote === '#' || targetNote === 'p') {
+            note = note.concat(targetNote)
+            continue
+          }
+          if (targetNote === '-') {
+            duration += defaultDuration
+          } else if (targetNote === ',') {
+            duration += defaultDuration / 2
+          } else if (targetNote === '_') {
+            duration = duration / 2
+          }
+        }
+        return {
+          note,
+          duration,
+        }
+      })
+      notationResult = notationResult.concat(notesDisplay)
+    })
+  return notationResult
+}
+

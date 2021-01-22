@@ -7,19 +7,17 @@ export interface DurationItem {
 }
 
 export interface NotationItem {
-  speed: number,
-  sheetMusic: string,
+  speed: number;
+  beat: number;
+  sheetMusic: string;
   detail: {
     name: string;
     author: string;
-    image: string
-  }
-  // detail: {
-  //   [string:string]: {
-  //     name: string,
-  //     author: string,
-  //   }
-  //   // name: string;
-  //   // author: string,
-  // }
+    image: string;
+  };
+}
+
+export interface TreatedNotation {
+  note: string,
+  duration: number
 }
