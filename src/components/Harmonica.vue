@@ -341,6 +341,7 @@ export default {
       holeDelay: [],
       notationCache: {},
       currentDisplay: null,
+      lastNotionEnd: null,
     })
 
     // const getCurrentPlayStatus = computed(() => {
@@ -449,6 +450,9 @@ export default {
 
     // 乐谱演奏
     const displayNotation = (notationResult, singleDuration) => {
+      if (state.lastNotionEnd) {
+        clearTimeout(state.lastNotionEnd)
+      }
       for (let i = 0; i < notationResult.length; i++) {
         let displayDuration = 0
         const notationItem = notationResult[i]
@@ -520,7 +524,7 @@ export default {
         }
         state.totalDuration += displayDuration
       }
-      setTimeout(() => {
+      state.lastNotionEnd = setTimeout(() => {
         stopDisplay()
         notationStore.pauseNotation()
       }, (state.totalDuration - state.lastDuration) * 1000)
@@ -569,8 +573,11 @@ export default {
         state.holeDelay.forEach(delayItem => {
           clearTimeout(delayItem.timeout)
         })
-        notationStore.commitPlayStatus(true)
-        displayTargetNotion()
+        if (notationStore.getPlayStatus) {
+          displayTargetNotion()
+        } else {
+          notationStore.commitPlayStatus(true)
+        }
       }
     )
 
@@ -623,6 +630,7 @@ export default {
   flex-direction: column;
   width: 405px;
   height: 82px;
+  user-select: none;
 
   > .cover {
     display: flex;
@@ -704,6 +712,7 @@ export default {
       .tips-top {
         position: absolute;
         bottom: 60px;
+        user-select: none;
       }
 
       .tips-bottom {

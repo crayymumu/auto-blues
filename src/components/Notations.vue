@@ -140,7 +140,7 @@ export default {
 
     const handlePlay = (index: number) => {
       if (isNumber(index)) {
-        notationStore.playNotation(index)
+        notationStore.commitCurrentNotation(index)
         return
       }
       if (getCurrentPlayStatus.value) {
