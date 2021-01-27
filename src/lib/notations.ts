@@ -1,6 +1,7 @@
 import { NotationItem } from '@/constant/types';
 
 /**
+ * = 四分音
  * _ 半音
  * , 附点音符
  * - 持续单音
@@ -112,6 +113,19 @@ const notationList: Array<NotationItem> = [
       '1133_1_2112|3_5535,-'
     ].join()
   },
+  // {
+  //   detail: {
+  //     name: '千本樱',
+  //     author: '千本樱',
+  //     image: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/cover/shuang.jpg',
+  //   },
+  //   speed: 98 / 60,
+  //   beat: 1 / 4,
+  //   // 需要特别处理 先半音再附点半音
+  //   sheetMusic: [
+  //     '3_4_|5,2。,1。|77_71。_7-6_5_6_1。65,3_2_1133_1_2112,|3_5535,|',
+  //   ].join()
+  // },
 ]
 
 export default notationList

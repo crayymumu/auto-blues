@@ -7,12 +7,12 @@
       >
         <div class="player__img player__img--absolute slider" :class="sliderClass">
           <button class="player__button player__button--absolute--nw playlist" @click="handleCollapse">
-            <img src="../assets/svg/playlist.svg" alt="playlist-icon">
+            <img class="img" src="../assets/svg/playlist.svg" alt="playlist-icon">
           </button>
 
           <button class="player__button player__button--absolute--center play" @click="handlePlay">
-            <img v-show="!getCurrentPlayStatus" src="../assets/svg/play.svg" alt="play-icon">
-            <img v-show="getCurrentPlayStatus" src="../assets/svg/pause.svg" alt="pause-icon">
+            <img v-show="!getCurrentPlayStatus" class="img" src="../assets/svg/play.svg" alt="play-icon">
+            <img v-show="getCurrentPlayStatus" class="img" src="../assets/svg/pause.svg" alt="pause-icon">
           </button>
 
           <div
@@ -552,7 +552,7 @@ export default {
 
 .player__button {
   all: unset ;
-  z-index: 100 ;
+  z-index: 1000;
   width: 2.5em ;
   height: 2.5em ;
   cursor: pointer ;

@@ -18,20 +18,26 @@
           :class="{
             'visible': holeItem.blow.bubbleVisible
           }"
+          :style="{
+            backgroundColor: blowBubble.color
+          }"
           @touchstart="handleCacheNote(holeItem.blow.pitch, 10)"
           @touchend="handleCancel(holeItem.blow)"
         >
-          吹
+          <span>{{ blowBubble.text }}</span>
         </div>
         <div
           class="tips-bottom bubble"
           :class="{
             'visible': holeItem.draw.bubbleVisible
           }"
+          :style="{
+            backgroundColor: drawBubble.color
+          }"
           @touchstart="handleCacheNote(holeItem.draw.pitch, 10)"
           @touchend="handleCancel(holeItem.draw)"
         >
-          吸
+          <span>{{ drawBubble.text }}</span>
         </div>
         <span class="reed" />
         <span class="rivet" />
@@ -50,7 +56,7 @@
 import WebAudioFontPlayer from 'webaudiofont'
 import { reactive, toRefs, onMounted, watch } from 'vue'
 import tone from '@/lib/tone'
-import { BarStandard, DisplayType } from '@/constant'
+import { BarStandard, DisplayType, HarmonicaBubbleColor } from '@/constant'
 import { isNumber, parseInt } from 'lodash'
 import { notationStore } from '@/store/modules/notation.ts';
 
@@ -65,6 +71,14 @@ export default {
     props.mode
 
     const state = reactive({
+      blowBubble: {
+        text: 'B',
+        color: HarmonicaBubbleColor[DisplayType.Blow],
+      },
+      drawBubble: {
+        text: 'D',
+        color: HarmonicaBubbleColor[DisplayType.Draw],
+      },
       harmonicaHoles: [
         {
           blow: {
@@ -391,12 +405,10 @@ export default {
     }
 
     const handleCacheNote = (pitch, duration, when = 0) => {
-      console.log('按下')
       state.cacheHole[pitch] = display(when, pitch, duration)
     }
 
     const handleCancel = item => {
-      console.log('取消')
       state.cacheHole[item.pitch].cancel()
     }
 
@@ -460,10 +472,12 @@ export default {
           state.harmonicaHoles.forEach(holeItem => {
             const allScale = []
             allScale.push(Object.assign(holeItem.blow, {
-              type: DisplayType.Blow
+              type: DisplayType.Blow,
+              displayType: DisplayType.Blow,
             }))
             allScale.push(Object.assign(holeItem.draw, {
-              type: DisplayType.Draw
+              type: DisplayType.Draw,
+              displayType: DisplayType.Draw,
             }))
             for (let i = 0; i < allScale.length; i++) {
               const scaleItem = allScale[i]
@@ -475,6 +489,7 @@ export default {
                 displayDuration = envelope.duration
                 findHoleStatus = true
                 targetPitch = scaleItem.pitch
+                scaleItem.displayType = scaleItem.type
               }
               // 技巧吹奏
               if (scaleItem.special && scaleItem.special.length > 0) {
@@ -484,6 +499,7 @@ export default {
                     displayDuration = envelope.duration
                     findHoleStatus = true
                     targetPitch = scaleItem.pitch
+                    scaleItem.displayType = specialItem.type
                   }
                 })
               }
@@ -493,8 +509,10 @@ export default {
                 const delayStart = setTimeout(() => {
                   if (scaleItem.type === DisplayType.Blow) {
                     holeItem.blow.bubbleVisible = true
+                    state.blowBubble.color = HarmonicaBubbleColor[scaleItem.displayType]
                   } else if (scaleItem.type === DisplayType.Draw) {
                     holeItem.draw.bubbleVisible = true
+                    state.drawBubble.color = HarmonicaBubbleColor[scaleItem.displayType]
                   }
                 }, delayDuration * 1000)
                 // 结束显示
@@ -724,16 +742,22 @@ export default {
 
       .bubble {
         user-select: none;
-        width: 25px;
-        height: 25px;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border-radius: 50%;
-        color: white;
-        background-image: linear-gradient(90deg, rgba(133,68,12, .9) 50%, transparent 50%),
-        linear-gradient(90deg, rgba(133,68,12, .9) 50%, transparent 50%),
-        linear-gradient(90deg, transparent 50%, rgba(133,68,12, .9) 50%),
-        linear-gradient(90deg, transparent 50%, rgba(133,68,12, .9) 50%);
+        color: rgba(133,68,12, .9);
         transform: scale(0, 0);
         transition: transform 0.2s ease 0s;
+        span {
+          width: 14px;
+          height: 14px;
+          line-height: 14px;
+          font-size: 10px;
+          text-align: center;
+        }
       }
 
       .visible {

@@ -1,7 +1,12 @@
 <template>
   <div class="home">
     <div class="layout-container">
-      <div class="harmonica-container">
+      <div
+        class="harmonica-container"
+        :style="{
+          zoom: modeValue ? 1.5 : 1
+        }"
+      >
         <div class="switch-container">
           <div class="expSwitch">
             <input id="model" type="checkbox">
@@ -14,8 +19,18 @@
         <div class="harmonica-item">
           <Harmonica :mode="modeValue" />
         </div>
+        <div v-show="!modeValue" class="display-color">
+          <div
+            v-for="item in DisplayType"
+            :key="item"
+            class="color-item"
+            :style="{
+              backgroundColor: HarmonicaBubbleColor[item]
+            }"
+          >{{ item }}</div>
+        </div>
       </div>
-      <div v-if="!modeValue" class="notations-container">
+      <div v-show="!modeValue" class="notations-container">
         <Notations />
       </div>
     </div>
@@ -25,6 +40,7 @@
 <script lang="ts">
 import Harmonica from '@/components/Harmonica.vue'
 import { reactive, toRefs, watch } from 'vue'
+import { HarmonicaBubbleColor, DisplayType } from '@/constant'
 import Notations from '@/components/Notations.vue';
 
 export default {
@@ -34,9 +50,12 @@ export default {
   },
   setup() {
     const state = reactive({
-      modeValue: false
+      modeValue: false,
+      HarmonicaBubbleColor,
+      DisplayType,
     })
 
+    console.log(HarmonicaBubbleColor)
     watch(
       () => state.modeValue,
       (val) => {
@@ -56,8 +75,6 @@ export default {
 </script>
 
 <style lang="less">
-@import (reference) '../style/transition.less';
-
 .home {
   height: 100%;
   width: 100%;
@@ -82,6 +99,17 @@ export default {
       align-items: center;
       justify-content: center;
       position: relative;
+      .display-color {
+        position: absolute;
+        bottom: 0;
+        display: flex;
+        flex-direction: row;
+        .color-item {
+          color: rgba(133,68,12, .9);
+          padding: 2px 4px;
+          margin-left: 4px;
+        }
+      }
       .switch-container {
         position: absolute;
         top: 0;
@@ -184,6 +212,7 @@ export default {
       }
       .placeholder {
         flex: 2;
+        user-select: none;
       }
       .harmonica-item {
         flex: 2;
@@ -192,5 +221,4 @@ export default {
   }
 
 }
-
 </style>
