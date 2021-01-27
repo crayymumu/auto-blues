@@ -570,6 +570,7 @@ export default {
       () => notationStore.getCurrentNotationIndex,
       () => {
         stopDisplay()
+        state.notationCache = {}
         state.holeDelay.forEach(delayItem => {
           clearTimeout(delayItem.timeout)
         })

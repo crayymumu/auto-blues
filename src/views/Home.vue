@@ -1,9 +1,6 @@
 <template>
   <div class="home">
     <div class="layout-container">
-      <div class="notations-container">
-        <Notations />
-      </div>
       <div class="harmonica-container">
         <div class="switch-container">
           <div class="expSwitch">
@@ -17,6 +14,9 @@
         <div class="harmonica-item">
           <Harmonica :mode="modeValue" />
         </div>
+      </div>
+      <div v-if="!modeValue" class="notations-container">
+        <Notations />
       </div>
     </div>
   </div>
@@ -56,6 +56,8 @@ export default {
 </script>
 
 <style lang="less">
+@import (reference) '../style/transition.less';
+
 .home {
   height: 100%;
   width: 100%;
@@ -69,12 +71,12 @@ export default {
     width: calc(100% - 20px);
     height: calc(100% - 20px);
     .notations-container {
-      flex: 3;
+      flex: 2;
       height: 100%;
       width: 100%;
     }
     .harmonica-container {
-      flex: 4;
+      flex: 3;
       display: flex;
       flex-direction: column;
       align-items: center;

@@ -18,7 +18,7 @@
           <div
             class="slider__content"
             :style="{
-              'transform': sliderContentTransform
+              'transform': sliderContentTransform,
             }"
           >
             <img
@@ -37,7 +37,11 @@
           </button>
 
           <transition name="opacity">
-            <p class="player__context slider__context" @click="handleExpand">
+            <p
+              v-show="sliderContextDisplay"
+              class="player__context slider__context"
+              @click="handleExpand"
+            >
               <strong class="slider__name">
                 {{ getCurrentNotation.detail.author }}
               </strong>
@@ -77,7 +81,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, toRefs, onMounted, computed } from 'vue';
+import { reactive, toRefs, onMounted, computed, nextTick } from 'vue';
 import notations from '@/lib/notations.ts'
 import { NotationItem, TreatedNotation } from '@/constant/types';
 import { notationStore } from '@/store/modules/notation.ts';
@@ -93,6 +97,7 @@ export default {
       playerHeaderClass: Array<string>;
       playControlClass: Array<string>;
       sliderClass: Array<string>;
+      sliderContextDisplay: boolean;
     }>({
       currentTime: 0,
       duration: 0,
@@ -100,6 +105,7 @@ export default {
       playerHeaderClass: [],
       playControlClass: [],
       sliderClass: [],
+      sliderContextDisplay: true
     })
 
     const handleExpand = () => {
@@ -123,19 +129,27 @@ export default {
     });
 
     const handleNext = () => {
+      state.sliderContextDisplay = false
       let nextIndex = notationStore.getCurrentNotationIndex + 1
       if (nextIndex === notations.length) {
         nextIndex = 0
       }
       notationStore.commitCurrentNotation(nextIndex)
+      nextTick(() => {
+        state.sliderContextDisplay = true
+      })
     }
 
     const handlePre = () => {
+      state.sliderContextDisplay = false
       let preIndex = notationStore.getCurrentNotationIndex - 1
       if (preIndex === -1) {
         preIndex = 0
       }
       notationStore.commitCurrentNotation(preIndex)
+      nextTick(() => {
+        state.sliderContextDisplay = true
+      })
     }
 
     const handlePlay = (index: number) => {
@@ -152,8 +166,9 @@ export default {
 
     const sliderContentTransform = computed(() => {
       const sliderWidth = 100
+      const extraTranslate = state.playerHeaderClass.length === 0 ? 1 : 0
       const left = notationStore.getCurrentNotationIndex * sliderWidth
-      return `translate3d(-${left}%, 0, 0)`
+      return `translate3d(-${left + extraTranslate}%, 0, 0)`
     })
 
     const calcNotationDuration = (notion: NotationItem) => {
@@ -442,7 +457,7 @@ export default {
 .player {
   display: flex ;
   overflow: hidden ;
-  font-size: 1.22em ;
+  //font-size: 1.22em ;
   border-radius: 1.35em ;
   flex-direction: column ;
   background-color: white ;
@@ -489,6 +504,10 @@ export default {
   flex-shrink: 0 ;
   overflow: hidden ;
   transition: width var(--cubic-header), height var(--cubic-header), top var(--cubic-header), left var(--cubic-header);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
 }
 
 .slider.open-slider{
