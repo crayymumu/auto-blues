@@ -3,11 +3,8 @@
     <div class="layout-container">
       <div
         class="harmonica-container"
-        :style="{
-          zoom: modeValue ? 1.5 : 1
-        }"
       >
-        <div class="switch-container">
+        <div v-show="!getPlayStatus" class="switch-container">
           <div class="expSwitch">
             <input id="model" type="checkbox">
             <label for="model" @click="modeValue = !modeValue" />
@@ -16,7 +13,12 @@
           </div>
         </div>
         <div class="placeholder">&nbsp;</div>
-        <div class="harmonica-item">
+        <div
+          class="harmonica-item"
+          :style="{
+            zoom: modeValue ? 1.5 : 1
+          }"
+        >
           <Harmonica :mode="modeValue" />
         </div>
         <div v-show="!modeValue" class="display-color">
@@ -39,9 +41,10 @@
 
 <script lang="ts">
 import Harmonica from '@/components/Harmonica.vue'
-import { reactive, toRefs, watch } from 'vue'
+import { computed, reactive, toRefs, watch } from 'vue'
 import { HarmonicaBubbleColor, DisplayType } from '@/constant'
 import Notations from '@/components/Notations.vue';
+import { notationStore } from '@/store/modules/notation.ts';
 
 export default {
   components: {
@@ -67,8 +70,13 @@ export default {
       }
     )
 
+    const getPlayStatus = computed(() => {
+      return notationStore.getPlayStatus
+    });
+
     return {
       ...toRefs(state),
+      getPlayStatus
     }
   },
 }
@@ -211,7 +219,7 @@ export default {
         }
       }
       .placeholder {
-        flex: 2;
+        flex: 1.5;
         user-select: none;
       }
       .harmonica-item {

@@ -96,8 +96,8 @@ const notationList: Array<NotationItem> = [
   },
   {
     detail: {
-      name: '双门洞',
-      author: '双门洞',
+      name: '双门洞/惠化洞',
+      author: '请回答1988',
       image: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/cover/shuang.jpg',
     },
     speed: 98 / 60,
