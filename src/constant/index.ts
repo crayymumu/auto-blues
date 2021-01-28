@@ -45,3 +45,11 @@ export const HarmonicaBubbleColor: object = {
   [DisplayType.OverDraw]: '#575B49',
   [DisplayType.OverBend]: '#19647e',
 }
+
+// 口琴音色
+export const HARMONICA_WEBFONT: object = {
+  path: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/harmonica1.js',
+  name: '_tone_0220_Aspirin_sf2_file',
+  // path: 'https://surikov.github.io/webaudiofontdata/sound/0220_SoundBlasterOld_sf2.js',
+  // name: '_tone_0220_SoundBlasterOld_sf2'
+}

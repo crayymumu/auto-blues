@@ -56,7 +56,7 @@
 import WebAudioFontPlayer from 'webaudiofont'
 import { reactive, toRefs, onMounted, watch } from 'vue'
 import tone from '@/lib/tone'
-import { BarStandard, DisplayType, HarmonicaBubbleColor } from '@/constant'
+import { BarStandard, DisplayType, HarmonicaBubbleColor, HARMONICA_WEBFONT } from '@/constant'
 import { isNumber, parseInt } from 'lodash'
 import { notationStore } from '@/store/modules/notation.ts';
 
@@ -377,8 +377,8 @@ export default {
       const AudioContextFunc = window.AudioContext || window.webkitAudioContext
       state.webAudioConfig.audioContext = new AudioContextFunc()
       state.webAudioConfig.player = new WebAudioFontPlayer()
-      const path = 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/harmonica1.js'
-      const name = '_tone_0220_Aspirin_sf2_file'
+      const path = HARMONICA_WEBFONT.path
+      const name = HARMONICA_WEBFONT.name
 
       state.webAudioConfig.player.loader.startLoad(state.webAudioConfig.audioContext, path, name)
       state.webAudioConfig.player.loader.waitLoad(() => {

@@ -15,7 +15,7 @@ const notationList: Array<NotationItem> = [
       author: 'Madden',
       image: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/cover/ai.jpg',
     },
-    speed: 120 / 60,
+    speed: 140 / 60,
     beat: 1 / 4,
     sheetMusic: [
       '1_2_|32_1_23_5_|6-51。_5_|65_3_21_2_|3--1_2_|',
@@ -100,7 +100,7 @@ const notationList: Array<NotationItem> = [
       author: '请回答1988',
       image: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/cover/shuang.jpg',
     },
-    speed: 98 / 60,
+    speed: 100 / 60,
     beat: 1 / 4,
     // 需要特别处理 先半音再附点半音
     sheetMusic: [

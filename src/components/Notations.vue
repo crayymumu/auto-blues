@@ -556,6 +556,10 @@ export default {
   width: 2.5em ;
   height: 2.5em ;
   cursor: pointer ;
+  // hack: https://www.zhangxinxu.com/wordpress/2015/05/css3-transform-affect/
+  img {
+    transform: translate3d(0,0,0)
+  }
 }
 
 .playlist {
@@ -712,10 +716,6 @@ export default {
   color: #00000079 ;
   height: fit-content ;
   align-self: flex-end ;
-}
-
-.audio {
-  display: none !important ;
 }
 
 </style>
