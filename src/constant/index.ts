@@ -27,23 +27,23 @@ export const BarStandard: object = {
 
 // 口琴演奏种类
 export enum DisplayType {
-  Blow = 'blow',
-  Draw = 'draw',
+  Blow = 'Blow',
+  Draw = 'Draw',
   // 超吹
-  OverBlow = 'overBlow',
+  OverBlow = 'OverBlow',
   // 压音
   OverBend = 'OverBend',
   // 超吸
-  OverDraw = 'overDraw'
+  OverDraw = 'OverDraw'
 }
 
 // 口琴主题色
 export const HarmonicaBubbleColor: object = {
-  [DisplayType.Blow]: '#ddcecd',
-  [DisplayType.Draw]: '#eee5e5',
+  [DisplayType.Blow]: '#caa78d',
+  [DisplayType.Draw]: '#cca085',
   [DisplayType.OverBlow]: '#28afb0',
-  [DisplayType.OverDraw]: '#575B49',
-  [DisplayType.OverBend]: '#19647e',
+  [DisplayType.OverDraw]: '#5f7880',
+  [DisplayType.OverBend]: '#d3d5d4',
 }
 
 // 口琴音色

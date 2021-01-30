@@ -108,12 +108,13 @@ export default {
       justify-content: center;
       position: relative;
       .display-color {
+        user-select: none;
         position: absolute;
         bottom: 0;
         display: flex;
         flex-direction: row;
         .color-item {
-          color: rgba(133,68,12, .9);
+          color: #fffeee;
           padding: 2px 4px;
           margin-left: 4px;
         }

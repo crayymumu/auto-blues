@@ -448,6 +448,12 @@ export default {
                 duration += defaultDuration / 2
               } else if (targetNote === '_') {
                 duration = duration / 2
+              } else if (targetNote === '=') {
+                duration = duration / 4
+              } else if (targetNote === '~') {
+                duration = duration / 8
+              } else if (targetNote === '≈') {
+                duration = duration / 16
               }
             }
             return {
@@ -748,7 +754,7 @@ export default {
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        color: rgba(133,68,12, .9);
+        color: #fffeee;
         transform: scale(0, 0);
         transition: transform 0.2s ease 0s;
         span {
