@@ -24,7 +24,7 @@
           @touchstart="handleCacheNote(holeItem.blow.pitch, 10)"
           @touchend="handleCancel(holeItem.blow)"
         >
-          <span>{{ blowBubble.text }}</span>
+          <span>{{ props.mode ? holeItem.blow.scale : blowBubble.text }}</span>
         </div>
         <div
           class="tips-bottom bubble"
@@ -37,7 +37,7 @@
           @touchstart="handleCacheNote(holeItem.draw.pitch, 10)"
           @touchend="handleCancel(holeItem.draw)"
         >
-          <span>{{ drawBubble.text }}</span>
+          <span>{{ props.mode ? holeItem.draw.scale : drawBubble.text }}</span>
         </div>
         <span class="reed" />
         <span class="rivet" />
@@ -68,8 +68,6 @@ export default {
     }
   },
   setup(props) {
-    props.mode
-
     const state = reactive({
       blowBubble: {
         text: 'B',
@@ -82,7 +80,8 @@ export default {
       harmonicaHoles: [
         {
           blow: {
-            scale: 'do',
+            scaleCN: 'do',
+            scale: 'C',
             scaleNumber: '1.',
             pitch: tone['C5'],
             special: [
@@ -95,7 +94,8 @@ export default {
             ],
           },
           draw: {
-            scale: 're',
+            scaleCN: 're',
+            scale: 'D',
             scaleNumber: '2.',
             pitch: tone['D5'],
             special: [
@@ -110,12 +110,14 @@ export default {
         },
         {
           blow: {
-            scale: 'mi',
+            scaleCN: 'mi',
+            scale: 'E',
             scaleNumber: '3.',
             pitch: tone['E5'],
           },
           draw: {
-            scale: 'so',
+            scaleCN: 'so',
+            scale: 'G',
             scaleNumber: '5.',
             pitch: tone['G5'],
             special: [
@@ -136,12 +138,14 @@ export default {
         },
         {
           blow: {
-            scale: 'so',
+            scaleCN: 'so',
+            scale: 'G',
             scaleNumber: '5.',
             pitch: tone['G5'],
           },
           draw: {
-            scale: 'si',
+            scaleCN: 'si',
+            scale: 'B',
             scaleNumber: '7.',
             pitch: tone['B5'],
             special: [
@@ -168,7 +172,8 @@ export default {
         },
         {
           blow: {
-            scale: 'do',
+            scaleCN: 'do',
+            scale: 'C',
             scaleNumber: '1',
             pitch: tone['C6'],
             special: [
@@ -181,7 +186,8 @@ export default {
             ],
           },
           draw: {
-            scale: 're',
+            scaleCN: 're',
+            scale: 'D',
             scaleNumber: '2',
             pitch: tone['D6'],
             special: [
@@ -196,7 +202,8 @@ export default {
         },
         {
           blow: {
-            scale: 'mi',
+            scaleCN: 'mi',
+            scale: 'E',
             scaleNumber: '3',
             pitch: tone['E6'],
             special: [
@@ -209,14 +216,16 @@ export default {
             ],
           },
           draw: {
-            scale: 'fa',
+            scaleCN: 'fa',
+            scale: 'F',
             scaleNumber: '4',
             pitch: tone['F6']
           },
         },
         {
           blow: {
-            scale: 'so',
+            scaleCN: 'so',
+            scale: 'G',
             scaleNumber: '5',
             pitch: tone['G6'],
             special: [
@@ -235,7 +244,8 @@ export default {
             ],
           },
           draw: {
-            scale: 'la',
+            scaleCN: 'la',
+            scale: 'A',
             scaleNumber: '6',
             pitch: tone['A6'],
             special: [
@@ -250,12 +260,14 @@ export default {
         },
         {
           blow: {
-            scale: 'do',
+            scaleCN: 'do',
+            scale: 'C',
             scaleNumber: '1。',
             pitch: tone['C7'],
           },
           draw: {
-            scale: 'si',
+            scaleCN: 'si',
+            scale: 'B',
             scaleNumber: '7',
             pitch: tone['B6'],
             special: [
@@ -270,7 +282,8 @@ export default {
         },
         {
           blow: {
-            scale: 'mi',
+            scaleCN: 'mi',
+            scale: 'E',
             scaleNumber: '3。',
             pitch: tone['E7'],
             special: [
@@ -283,14 +296,16 @@ export default {
             ],
           },
           draw: {
-            scale: 're',
+            scaleCN: 're',
+            scale: 'D',
             scaleNumber: '2。',
             pitch: tone['D7']
           },
         },
         {
           blow: {
-            scale: 'so',
+            scaleCN: 'so',
+            scale: 'G',
             scaleNumber: '5。',
             pitch: tone['G7'],
             special: [
@@ -303,7 +318,8 @@ export default {
             ],
           },
           draw: {
-            scale: 'fa',
+            scaleCN: 'fa',
+            scale: 'F',
             scaleNumber: '4。',
             pitch: tone['F7'],
             special: [
@@ -318,7 +334,8 @@ export default {
         },
         {
           blow: {
-            scale: 'do',
+            scaleCN: 'do',
+            scale: 'C',
             scaleNumber: '5。。',
             pitch: tone['C8'],
             special: [
@@ -337,7 +354,8 @@ export default {
             ],
           },
           draw: {
-            scale: 'la',
+            scaleCN: 'la',
+            scale: 'A',
             scaleNumber: '6。',
             pitch: tone['A7']
           },
@@ -644,6 +662,7 @@ export default {
       ...toRefs(state),
       handleCacheNote,
       handleCancel,
+      props,
     }
   }
 }

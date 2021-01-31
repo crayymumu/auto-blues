@@ -23,7 +23,7 @@ module.exports = {
   chainWebpack: config => {
     config.plugin('html')
       .tap(args => {
-        args[0].title = '自由口琴 - AutoHarmonica | 在线吹口琴，听简谱演绎 - Play Harmonica Online';
+        args[0].title = '自由蓝调 - Auto Blues Harp';
         return args;
       })
   },
