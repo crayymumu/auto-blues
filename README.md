@@ -1,4 +1,10 @@
-# auto-harmonica
+# auto-blues
+
+### Template from codepen：
+1. https://codepen.io/denistoledo/pen/VPNPRy
+2. https://codepen.io/prateekjadhwani/pen/lcvHi
+3. https://codepen.io/abxlfazl/pen/YzGEVRP
+
 
 ## Project setup
 ```

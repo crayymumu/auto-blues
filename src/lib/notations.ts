@@ -11,6 +11,20 @@ import { NotationItem } from '@/constant/types';
  * 。高音
  */
 const notationList: Array<NotationItem> = [
+  // {
+  //   detail: {
+  //     name: '夜空中最亮的星',
+  //     author: '逃跑计划',
+  //     image: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/cover/qian.jpg',
+  //   },
+  //   speed: 100 / 60,
+  //   beat: 1 / 4,
+  //   // 需要特别处理 先半音再附点半音
+  //   sheetMusic: [
+  //     '3_2_3_2_3_5_5-5-5.|1-2-|1-00|1_1_2_3_10|5._1_2_3_10_5._|',
+  //     '23---3-0|3_2_',
+  //   ].join()
+  // },
   {
     detail: {
       name: 'Down by the Salley Gardens',
