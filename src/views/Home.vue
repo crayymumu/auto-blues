@@ -58,7 +58,6 @@ export default {
       DisplayType,
     })
 
-    console.log(HarmonicaBubbleColor)
     watch(
       () => state.modeValue,
       (val) => {

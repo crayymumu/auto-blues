@@ -53,3 +53,26 @@ export const HARMONICA_WEBFONT: object = {
   // path: 'https://surikov.github.io/webaudiofontdata/sound/0220_SoundBlasterOld_sf2.js',
   // name: '_tone_0220_SoundBlasterOld_sf2'
 }
+
+export const DEMO_WEBFONT_LIST: Array<object> = [
+  {
+    path: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/gangqing.js',
+    value: '_tone_0000_Chaos_sf2_file',
+    name: '钢琴'
+  },
+  {
+    path: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/harmonica1.js',
+    value: '_tone_0220_Aspirin_sf2_file',
+    name: '口琴'
+  },
+  {
+    path: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/jita.js',
+    value: '_tone_0240_Aspirin_sf2_file',
+    name: '吉他'
+  },
+  {
+    path: 'https://blog-oss-file.oss-cn-shanghai.aliyuncs.com/blog-fileimages/audioFont/changdi.js',
+    value: '_tone_0730_Aspirin_sf2_file',
+    name: '长笛'
+  },
+]
